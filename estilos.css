@@ -464,6 +464,35 @@ svg {
   }
 }
 
+/* ---------- puente Paysandú-Colón ---------- */
+
+/*
+  El puente General Artigas como fondo: línea gris clara, sin bloque propio
+  de altura fija. En pantallas chicas se muestra el tramo central —la parte
+  reconocible— recortando los extremos con el contenedor.
+*/
+.puente {
+  overflow: hidden;
+  color: var(--gris-2);
+  opacity: 0.55;
+  margin-bottom: -6px; /* el agua toca la franja azul: el río llega al borde */
+  pointer-events: none;
+}
+.puente__dibujo {
+  display: block;
+  width: 100%;
+  max-width: none; /* anula el max-width global de svg: acá el desborde es deliberado */
+  height: auto;
+}
+@media (max-width: 48rem) {
+  .puente__dibujo {
+    /* El vano principal está al 62 % del dibujo (la aproximación argentina
+       es más larga); este corrimiento lo deja centrado en pantalla. */
+    width: 220%;
+    margin-left: -86%;
+  }
+}
+
 /* ---------- franja de territorio ---------- */
 
 .territorio {

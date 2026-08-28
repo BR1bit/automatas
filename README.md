@@ -62,6 +62,15 @@ avanza un pétalo (72°, un quinto de vuelta) y queda idéntica.
 - La **franja tricolor de 3 px** sobre la barra superior repite el orden azul ·
   rojo · azul de la bandera. Es el único gesto heráldico del sitio.
 
+Entre la portada y la franja azul cruza el **puente Paysandú–Colón** (General
+Artigas) dibujado en línea gris clara, con sus proporciones reales: la
+aproximación larga del lado argentino (34 vanos contra 10), la loma del vano
+principal de 140 m y la viga que engrosa sobre las dos pilas grandes, como
+corresponde a los volados sucesivos. El agua del dibujo desemboca en la franja
+azul de territorio. En pantallas chicas se muestra solo el tramo central. La
+fuente es `puente.svg` (generado por cálculo, como la flor) y va en línea en el
+HTML.
+
 El SVG va **en línea dentro de `index.html`**, no como máscara CSS: las
 máscaras con archivo externo no cargan al abrir la página con doble clic
 (`file://`) y el logo desaparecía. Los trazos usan `currentColor`, así que el
