@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="es-UY">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Automatizá procesos y convertí datos en decisiones · automatas</title>
+    <meta
+      name="description"
+      content="Consultoría en automatización de procesos, inteligencia artificial aplicada y automatización de gestión. Con base en Paysandú, Uruguay."
+    />
+    <link rel="canonical" href="https://automatas.app/" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#003399" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_UY" />
+    <meta property="og:site_name" content="automatas" />
+    <meta
+      property="og:title"
+      content="Automatizá procesos y convertí datos en decisiones"
+    />
+    <meta
+      property="og:description"
+      content="Analizamos cómo trabaja tu organización, detectamos las tareas que se repiten y dejamos funcionando una solución documentada y medible. Con base en Paysandú."
+    />
+    <meta property="og:url" content="https://automatas.app/" />
+
+    <link rel="stylesheet" href="estilos.css" />
+
+    <!--
+      PENDIENTE: los datos de contacto son los únicos inventados del sitio.
+      Reemplazá el número 5989XXXXXXX (acá abajo, en la sección diagnóstico y
+      en el pie), el teléfono fijo, la casilla de correo y la zona.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "automatas",
+        "description": "Consultoría en automatización de procesos, inteligencia artificial aplicada y automatización de gestión.",
+        "url": "https://automatas.app",
+        "email": "hola@automatas.app",
+        "telephone": "+598 472 XX XXX",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Paysandú",
+          "addressRegion": "Paysandú",
+          "addressCountry": "UY"
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Paysandú" },
+          { "@type": "AdministrativeArea", "name": "Salto" },
+          { "@type": "AdministrativeArea", "name": "Río Negro" }
+        ],
+        "knowsLanguage": "es-UY"
+      }
+    </script>
+  </head>
+
+  <body data-whatsapp="5989XXXXXXX">
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+    <!-- Las tres franjas de la bandera de Paysandú: azul, rojo, azul. -->
+    <div class="franja-bandera"></div>
+
+    <header class="barra">
+      <nav class="contenedor barra__nav" aria-label="Principal">
+        <a class="marca" href="#">
+          <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle cx="80.00" cy="20.00" r="8"/><circle cx="137.06" cy="61.46" r="8"/><circle cx="115.27" cy="128.54" r="8"/><circle cx="44.73" cy="128.54" r="8"/><circle cx="22.94" cy="61.46" r="8"/></g></svg>
+          <span class="marca__nombre">automatas</span>
+          <span class="marca__lugar">Paysandú, UY</span>
+        </a>
+
+        <ul class="barra__enlaces">
+          <li><a href="#soluciones">Soluciones</a></li>
+          <li><a href="#proceso">Cómo trabajamos</a></li>
+          <li><a href="#demostraciones">Demostraciones</a></li>
+          <li><a href="#preguntas">Preguntas</a></li>
+        </ul>
+
+        <a class="boton boton--chico" href="#diagnostico">Solicitar diagnóstico</a>
+      </nav>
+    </header>
+
+    <main id="contenido">
+      <!-- ---------- portada ---------- -->
+      <section class="portada">
+        <div class="contenedor portada__grilla">
+          <div>
+            <p class="antetitulo">
+              Consultoría en automatización · Paysandú, Uruguay
+            </p>
+
+            <h1>Automatizá procesos y convertí datos en decisiones</h1>
+
+            <p class="portada__bajada">
+              Analizamos cómo trabaja tu organización, detectamos las tareas que
+              se repiten y dejamos funcionando una solución documentada y
+              medible. Con base en Paysandú, cerca de tu planta, tu escuela o tu
+              oficina.
+            </p>
+
+            <div class="portada__acciones">
+              <a class="boton" href="#diagnostico">Solicitar diagnóstico</a>
+              <a class="boton boton--linea" href="#soluciones"
+                >Conocer las soluciones</a
+              >
+            </div>
+
+            <p class="portada__micro">
+              Primera conversación sin costo · Respondemos el mismo día hábil
+            </p>
+          </div>
+
+          <div class="portada__marca" aria-hidden="true">
+            <svg class="flor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="4.6"><path d="M80.00 64.00 Q99.00 41.00 80.00 18.00 Q61.00 41.00 80.00 64.00Z"/><path d="M95.22 75.06 Q122.96 86.02 138.97 60.84 Q111.22 49.88 95.22 75.06Z"/><path d="M89.40 92.94 Q87.55 122.72 116.44 130.16 Q118.29 100.38 89.40 92.94Z"/><path d="M70.60 92.94 Q41.71 100.38 43.56 130.16 Q72.45 122.72 70.60 92.94Z"/><path d="M64.78 75.06 Q48.78 49.88 21.03 60.84 Q37.04 86.02 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g stroke-width="4.6"><circle cx="80.00" cy="18.00" r="6.5"/><circle cx="138.97" cy="60.84" r="6.5"/><circle cx="116.44" cy="130.16" r="6.5"/><circle cx="43.56" cy="130.16" r="6.5"/><circle cx="21.03" cy="60.84" r="6.5"/></g></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- franja de territorio ---------- -->
+      <section class="territorio">
+        <div class="contenedor territorio__grilla">
+          <p>
+            Trabajamos desde Paysandú. Vamos a ver el proceso donde ocurre: en la
+            ciudad y en el interior del departamento,
+            <strong>sin costo de traslado</strong>. Al resto del litoral, según
+            el proyecto.
+          </p>
+          <ul>
+            <li>Paysandú</li>
+            <li>Guichón</li>
+            <li>Quebracho</li>
+            <li>Porvenir</li>
+            <li>Piedras Coloradas</li>
+            <li>Chapicuy</li>
+            <li>Lorenzo Geyres</li>
+            <li>Tambores</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ---------- problemas ---------- -->
+      <section class="seccion">
+        <div class="contenedor">
+          <p class="antetitulo">El punto de partida</p>
+          <h2 class="titulo">
+            ¿Tu organización todavía depende de tareas manuales y planillas
+            sueltas?
+          </h2>
+          <p class="entrada">
+            Si reconocés dos o tres, hay trabajo para hacer. No hace falta que
+            sepas cuál es la tecnología: eso lo resolvemos nosotros después de
+            mirar el proceso.
+          </p>
+
+          <ul class="sintomas">
+            <li>Se repiten las mismas tareas todos los días.</li>
+            <li>Preparar un informe lleva varias horas.</li>
+            <li>La información está dispersa en varios lugares.</li>
+            <li>Hay errores por carga manual.</li>
+            <li>No hay indicadores en tiempo real.</li>
+            <li>Los sistemas no se comunican entre sí.</li>
+            <li>Necesitás incorporar sensores o monitoreo.</li>
+            <li>Querés usar IA con un objetivo concreto y con control.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ---------- soluciones ---------- -->
+      <section class="seccion seccion--linea" id="soluciones">
+        <div class="contenedor">
+          <p class="antetitulo">Soluciones</p>
+          <h2 class="titulo">Tres capacidades que se combinan según el problema</h2>
+          <p class="entrada">
+            No vendemos tecnología aislada. La herramienta se elige después de
+            entender el proceso, nunca antes.
+          </p>
+
+          <div class="columnas columnas--tres">
+            <article class="columna">
+              <h3>Procesos</h3>
+              <p class="columna__resumen">
+                Mapeamos cómo se trabaja hoy, encontramos las demoras y los
+                errores, y ordenamos las mejoras por impacto y viabilidad.
+              </p>
+              <ul class="columna__lista">
+                <li>Mapa del proceso actual</li>
+                <li>Tareas repetitivas, demoras y errores</li>
+                <li>Prioridades según impacto y costo</li>
+                <li>Plan con indicadores de éxito</li>
+              </ul>
+            </article>
+
+            <article class="columna">
+              <h3>Inteligencia artificial aplicada</h3>
+              <p class="columna__resumen">
+                Asistentes que responden con tus propios documentos,
+                clasificación de información y borradores que una persona revisa
+                antes de que salgan.
+              </p>
+              <ul class="columna__lista">
+                <li>Asistentes sobre documentos autorizados</li>
+                <li>Clasificación y extracción de datos</li>
+                <li>Borradores para revisión humana</li>
+                <li>Búsqueda interna inteligente</li>
+              </ul>
+            </article>
+
+            <article class="columna">
+              <h3>Automatización de gestión</h3>
+              <p class="columna__resumen">
+                Solicitudes que se reciben y se clasifican solas, avisos
+                automáticos, informes que se generan y sistemas que por fin
+                intercambian datos.
+              </p>
+              <ul class="columna__lista">
+                <li>Recepción y clasificación de solicitudes</li>
+                <li>Avisos, recordatorios y seguimiento</li>
+                <li>Generación de documentos e informes</li>
+                <li>Integración entre formularios y sistemas</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="secundarias">
+            <p class="antetitulo">También hacemos</p>
+            <article class="secundaria">
+              <h3>Monitoreo e IoT</h3>
+              <p>
+                Sensores, paneles con registro histórico y alertas cuando una
+                variable se sale de rango.
+              </p>
+            </article>
+            <article class="secundaria">
+              <h3>Infraestructura</h3>
+              <p>
+                Servidores locales o en la nube, redes, acceso remoto, respaldo y
+                recuperación.
+              </p>
+            </article>
+            <article class="secundaria">
+              <h3>Educación</h3>
+              <p>
+                Inscripciones, seguimiento, documentación y comunicación para
+                instituciones educativas.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- cómo trabajamos ---------- -->
+      <section class="seccion seccion--linea" id="proceso">
+        <div class="contenedor">
+          <p class="antetitulo">Cómo trabajamos</p>
+          <h2 class="titulo">Desde el diagnóstico hasta la solución funcionando</h2>
+          <p class="entrada">
+            Cada etapa termina en algo que podés leer, probar o usar. Si el
+            diagnóstico muestra que no conviene automatizar, te lo decimos ahí.
+          </p>
+
+          <ol class="etapas">
+            <li class="etapa">
+              <span class="etapa__numero">01</span>
+              <h3>Conversación</h3>
+              <p>
+                Una reunión breve para conocer la organización, el problema y el
+                resultado que esperás.
+              </p>
+            </li>
+            <li class="etapa">
+              <span class="etapa__numero">02</span>
+              <h3>Diagnóstico</h3>
+              <p>
+                Observamos y documentamos el proceso: entradas, responsables,
+                decisiones, demoras y errores.
+              </p>
+            </li>
+            <li class="etapa">
+              <span class="etapa__numero">03</span>
+              <h3>Propuesta</h3>
+              <p>
+                Alcance, exclusiones, tecnología, entregables, plazos, precio e
+                indicadores. Por escrito.
+              </p>
+            </li>
+            <li class="etapa">
+              <span class="etapa__numero">04</span>
+              <h3>Prototipo</h3>
+              <p>
+                Una versión reducida que demuestra el flujo principal con datos
+                controlados, antes de invertir.
+              </p>
+            </li>
+            <li class="etapa">
+              <span class="etapa__numero">05</span>
+              <h3>Entrega</h3>
+              <p>
+                Implementación, pruebas, seguridad, respaldo, manual,
+                capacitación y accesos en tus manos.
+              </p>
+            </li>
+          </ol>
+
+          <p class="apunte">
+            Después de la entrega, el acompañamiento es opcional: monitoreo,
+            soporte y mejoras acordadas en un plan mensual. La solución queda
+            funcionando y documentada, contrates o no ese plan.
+          </p>
+        </div>
+      </section>
+
+      <!-- ---------- demostraciones ---------- -->
+      <section class="seccion seccion--linea" id="demostraciones">
+        <div class="contenedor">
+          <p class="antetitulo">Demostraciones</p>
+          <h2 class="titulo">Dos soluciones funcionando, no un catálogo de promesas</h2>
+          <p class="entrada">
+            Están armadas con datos simulados o propios. Nunca mostramos
+            información de otras organizaciones sin autorización escrita.
+          </p>
+
+          <div class="columnas columnas--dos">
+            <article class="demo">
+              <!-- TODO Bruno: reemplazar por captura o video corto de la demo real. -->
+              <div class="demo__captura">Captura de la demostración</div>
+              <p class="antetitulo demo__antetitulo">Prototipo 1 · Gestión</p>
+              <h3>Solicitudes que se resuelven solas hasta la última milla</h3>
+              <dl>
+                <div>
+                  <dt>Problema</dt>
+                  <dd>
+                    Los pedidos llegan por correo, WhatsApp y en mostrador.
+                    Alguien los copia a una planilla, avisa al responsable y
+                    contesta a mano.
+                  </dd>
+                </div>
+                <div>
+                  <dt>Cómo se hacía antes</dt>
+                  <dd>Entre 10 y 20 minutos por solicitud, y algunas se pierden.</dd>
+                </div>
+                <div>
+                  <dt>Qué hace la solución</dt>
+                  <dd>
+                    Un formulario recibe el pedido, la IA lo clasifica y resume,
+                    el sistema registra el caso, avisa al responsable por
+                    WhatsApp y devuelve un acuse inmediato a quien escribió.
+                  </dd>
+                </div>
+                <div>
+                  <dt>Resultado</dt>
+                  <dd>
+                    Registro completo, respuesta en el momento y una sola bandeja
+                    donde mirar.
+                  </dd>
+                </div>
+              </dl>
+              <p class="demo__vivo">
+                <strong>Está corriendo en esta página.</strong> El formulario de
+                más abajo es exactamente este prototipo: cuando nos escribas, vas
+                a estar usando la solución.
+              </p>
+            </article>
+
+            <article class="demo">
+              <!-- TODO Bruno: reemplazar por captura o video corto de la demo real. -->
+              <div class="demo__captura">Captura de la demostración</div>
+              <p class="antetitulo demo__antetitulo">Prototipo 2 · Operativo</p>
+              <h3>Indicadores en tiempo real y alertas antes del problema</h3>
+              <dl>
+                <div>
+                  <dt>Problema</dt>
+                  <dd>
+                    Las variables críticas se anotan en papel una o dos veces por
+                    día. Cuando algo se sale de rango, se descubre tarde.
+                  </dd>
+                </div>
+                <div>
+                  <dt>Cómo se hacía antes</dt>
+                  <dd>Sin historial consultable y sin aviso automático.</dd>
+                </div>
+                <div>
+                  <dt>Qué hace la solución</dt>
+                  <dd>
+                    Sensores registran los valores, un panel los muestra en vivo
+                    con su historial y el sistema avisa cuando se supera un
+                    límite configurado.
+                  </dd>
+                </div>
+                <div>
+                  <dt>Resultado</dt>
+                  <dd>
+                    Visibilidad continua, historial para analizar y alertas que
+                    llegan a tiempo.
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- estamos acá ---------- -->
+      <section class="seccion seccion--linea">
+        <div class="contenedor aca__grilla">
+          <div>
+            <p class="antetitulo">Estamos acá</p>
+            <h2 class="titulo">Consultoría sanducera, no un proveedor a distancia</h2>
+            <p>
+              Conocemos el tejido productivo del departamento. Podemos ir a ver
+              el proceso en la planta, en el aula o en el mostrador, y volver la
+              semana siguiente con una propuesta concreta. Cuando el proyecto lo
+              justifica, viajamos al resto del litoral.
+            </p>
+            <p>
+              Trabajamos con estándares abiertos y APIs, documentamos todo lo que
+              entregamos y dejamos los accesos en manos de la organización. Si
+              mañana decidís seguir sin nosotros, el sistema sigue funcionando.
+            </p>
+            <ul class="rubros">
+              <li>Agroindustria</li>
+              <li>Citricultura</li>
+              <li>Forestación</li>
+              <li>Frigorífico</li>
+              <li>Textil</li>
+              <li>Comercio</li>
+              <li>Servicios</li>
+              <li>Educación técnica</li>
+            </ul>
+          </div>
+
+          <!-- TODO Bruno: foto propia de Paysandú. Nunca banco de imágenes. -->
+          <figure class="foto">
+            <div class="foto__marco">Foto propia · Paysandú</div>
+            <figcaption>
+              Sesión pendiente: costanera y río, un galpón, un escritorio real,
+              un aula técnica.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ---------- preguntas ---------- -->
+      <section class="seccion seccion--linea" id="preguntas">
+        <div class="contenedor">
+          <p class="antetitulo">Preguntas frecuentes</p>
+          <h2 class="titulo">Lo que suelen preguntarnos antes de empezar</h2>
+
+          <div class="preguntas">
+            <details class="pregunta">
+              <summary>
+                ¿Cuánto demora un proyecto?<span class="mas" aria-hidden="true"></span>
+              </summary>
+              <p>
+                El diagnóstico se entrega en una o dos semanas. Un prototipo
+                funcional, entre dos y cuatro. Una implementación completa
+                depende del alcance, y ese plazo queda escrito en la propuesta
+                antes de empezar.
+              </p>
+            </details>
+
+            <details class="pregunta">
+              <summary>
+                ¿De quién es lo que se construye?<span class="mas" aria-hidden="true"></span>
+              </summary>
+              <p>
+                De tu organización. Entregamos el código, la documentación y
+                todos los accesos. Preferimos estándares abiertos justamente para
+                que no quedes atado a nosotros.
+              </p>
+            </details>
+
+            <details class="pregunta">
+              <summary>
+                ¿Qué pasa con nuestros datos?<span class="mas" aria-hidden="true"></span>
+              </summary>
+              <p>
+                Se trabaja con roles, credenciales protegidas, respaldos y
+                ambientes separados. En los proyectos con IA definimos qué
+                información puede usarse y cuál no, por escrito, antes de
+                conectar nada.
+              </p>
+            </details>
+
+            <details class="pregunta">
+              <summary>
+                ¿La inteligencia artificial decide sola?<span class="mas" aria-hidden="true"></span>
+              </summary>
+              <p>
+                No. La IA asiste: clasifica, resume y propone borradores. Las
+                decisiones sensibles quedan siempre bajo responsabilidad de una
+                persona, y el sistema se diseña para que eso sea así.
+              </p>
+            </details>
+
+            <details class="pregunta">
+              <summary>
+                ¿Hay que cambiar los sistemas que ya usamos?<span class="mas" aria-hidden="true"></span>
+              </summary>
+              <p>
+                Casi nunca. La mayoría de las mejoras se consiguen conectando lo
+                que ya tenés. Si algo conviene reemplazar, lo vas a ver
+                justificado en el diagnóstico con números, no como recomendación
+                genérica.
+              </p>
+            </details>
+
+            <details class="pregunta">
+              <summary>
+                ¿Qué no hacemos?<span class="mas" aria-hidden="true"></span>
+              </summary>
+              <p>
+                Automatización industrial crítica, programación de PLC e
+                intervención eléctrica sobre maquinaria. Si tu proyecto necesita
+                eso, lo decimos en la primera conversación y te orientamos hacia
+                profesionales habilitados.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- diagnóstico ---------- -->
+      <section class="seccion seccion--linea" id="diagnostico">
+        <div class="contenedor diagnostico__grilla">
+          <div>
+            <p class="antetitulo">Primer paso</p>
+            <h2 class="titulo">Contanos qué proceso querés mejorar</h2>
+            <p class="entrada">
+              No hace falta que sepas qué tecnología usar. Describinos el
+              problema, cómo se trabaja hoy y qué resultado te gustaría
+              conseguir. Analizamos la viabilidad y proponemos un primer paso
+              concreto.
+            </p>
+
+            <dl class="datos">
+              <div>
+                <dt>WhatsApp</dt>
+                <dd>
+                  <a
+                    href="https://wa.me/5989XXXXXXX?text=Hola%2C%20quiero%20consultar%20por%20un%20proceso%20que%20necesitamos%20mejorar."
+                    rel="noopener"
+                    >+598 9X XXX XXX</a
+                  >
+                </dd>
+              </div>
+              <div>
+                <dt>Correo</dt>
+                <dd><a href="mailto:hola@automatas.app">hola@automatas.app</a></dd>
+              </div>
+              <div>
+                <dt>Horario</dt>
+                <dd>Lunes a viernes, 9 a 18 h</dd>
+              </div>
+            </dl>
+          </div>
+
+          <form id="form-diagnostico" novalidate>
+            <div class="campos">
+              <div>
+                <label class="etiqueta" for="organizacion">Organización *</label>
+                <input
+                  class="campo"
+                  id="organizacion"
+                  name="organizacion"
+                  type="text"
+                  required
+                  autocomplete="organization"
+                />
+              </div>
+
+              <div>
+                <label class="etiqueta" for="persona">Nombre y rol *</label>
+                <input
+                  class="campo"
+                  id="persona"
+                  name="persona"
+                  type="text"
+                  required
+                  autocomplete="name"
+                />
+              </div>
+
+              <div>
+                <label class="etiqueta" for="rubro">Rubro *</label>
+                <select class="campo" id="rubro" name="rubro" required>
+                  <option value="">Elegí una opción</option>
+                  <option>Agroindustria</option>
+                  <option>Citricultura</option>
+                  <option>Forestación</option>
+                  <option>Frigorífico</option>
+                  <option>Textil</option>
+                  <option>Comercio</option>
+                  <option>Servicios</option>
+                  <option>Educación</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="etiqueta" for="localidad">Localidad *</label>
+                <select class="campo" id="localidad" name="localidad" required>
+                  <option value="">Elegí una opción</option>
+                  <option>Paysandú ciudad</option>
+                  <option>Interior del departamento</option>
+                  <option>Otro punto del litoral</option>
+                  <option>Resto del país</option>
+                </select>
+              </div>
+
+              <div class="ancho">
+                <label class="etiqueta" for="proceso"
+                  >¿Qué proceso querés mejorar? *</label
+                >
+                <textarea
+                  class="campo"
+                  id="proceso"
+                  name="proceso"
+                  rows="3"
+                  required
+                  placeholder="Por ejemplo: cada pedido que entra por WhatsApp lo copiamos a una planilla, avisamos al depósito y contestamos a mano."
+                ></textarea>
+                <p class="pista">
+                  Este es el campo que más nos sirve. Contalo con tus palabras.
+                </p>
+              </div>
+
+              <fieldset class="ancho">
+                <legend class="etiqueta">¿Cómo se hace hoy?</legend>
+                <div class="opciones">
+                  <label
+                    ><input type="checkbox" name="como" value="En papel" />En
+                    papel</label
+                  >
+                  <label
+                    ><input type="checkbox" name="como" value="En planillas" />En
+                    planillas</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      name="como"
+                      value="En un sistema propio"
+                    />En un sistema propio</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      name="como"
+                      value="Por correo o mensajes"
+                    />Por correo o mensajes</label
+                  >
+                  <label
+                    ><input type="checkbox" name="como" value="No sabría decir" />No
+                    sabría decir</label
+                  >
+                </div>
+              </fieldset>
+
+              <div>
+                <label class="etiqueta" for="frecuencia">¿Cada cuánto ocurre?</label>
+                <select class="campo" id="frecuencia" name="frecuencia">
+                  <option value="">Elegí una opción</option>
+                  <option>Varias veces por día</option>
+                  <option>Una vez por día</option>
+                  <option>Algunas veces por semana</option>
+                  <option>Una vez por semana o menos</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="etiqueta" for="contacto">WhatsApp o correo *</label>
+                <input
+                  class="campo"
+                  id="contacto"
+                  name="contacto"
+                  type="text"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Trampa para robots: si viene con contenido, se descarta el envío. -->
+            <div class="trampa" aria-hidden="true">
+              <label for="apellido2">No completar</label>
+              <input
+                id="apellido2"
+                name="apellido2"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="envio">
+              <button type="submit" class="boton">
+                Enviar y agendar el diagnóstico
+              </button>
+              <span class="estado" role="status" aria-live="polite"></span>
+            </div>
+
+            <p class="privacidad">
+              Guardamos lo que nos escribas solamente para responderte y preparar
+              la reunión. No lo compartimos con terceros y lo damos de baja si
+              nos lo pedís.
+            </p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie">
+      <div class="contenedor">
+        <div class="pie__grilla">
+          <div>
+            <span class="marca">
+              <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle cx="80.00" cy="20.00" r="8"/><circle cx="137.06" cy="61.46" r="8"/><circle cx="115.27" cy="128.54" r="8"/><circle cx="44.73" cy="128.54" r="8"/><circle cx="22.94" cy="61.46" r="8"/></g></svg>
+              <span class="marca__nombre">automatas</span>
+            </span>
+            <p class="pie__lema">
+              Automatizamos procesos. Integramos tecnología. Mejoramos
+              resultados.
+            </p>
+          </div>
+
+          <div class="pie__bloque">
+            <span class="pie__titulo">Contacto</span>
+            <a
+              href="https://wa.me/5989XXXXXXX?text=Hola%2C%20quiero%20consultar%20por%20un%20proceso%20que%20necesitamos%20mejorar."
+              rel="noopener"
+              >WhatsApp</a
+            >
+            <a href="mailto:hola@automatas.app">hola@automatas.app</a>
+            <span>+598 472 XX XXX</span>
+            <span>Lunes a viernes, 9 a 18 h</span>
+          </div>
+
+          <div class="pie__bloque">
+            <span class="pie__titulo">Dónde estamos</span>
+            <span>Paysandú, Uruguay</span>
+            <span
+              >Visitamos sin costo Paysandú y el interior del departamento.</span
+            >
+          </div>
+        </div>
+
+        <div class="pie__cierre">
+          <!-- Diecinueve puntos: los diecinueve departamentos, como en la bandera. -->
+          <div class="departamentos" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <p class="firma">Paysandú, la Heroica · Uruguay</p>
+        </div>
+
+        <p class="copyright">© 2026 automatas · automatas.app</p>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

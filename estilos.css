@@ -1,0 +1,1064 @@
+@import url('fuentes/fuentes.css');
+
+/*
+  Identidad: bandera de Paysandú (Silvio Giordano, 1992). Campo blanco,
+  azul #003399, rojo #b43232 y el lila de la flor del mburucuyá.
+
+  El tratamiento es contemporáneo y austero: una sola grotesca, una mono
+  para etiquetas y datos, tipografía grande y apretada, casi ningún borde.
+  El color aparece en dos lugares y nada más.
+*/
+
+:root {
+  --papel: #ffffff;
+  --tinta: #0b0f1a;
+  --gris: #616b84;
+  --gris-2: #8a93a8;
+  --linea: #e6e9f0;
+  --linea-2: #f1f3f8;
+  --azul: #003399;
+  --azul-hover: #00257a;
+  --azul-tinte: #eaeffb;
+  --lila: #7a5aa6;
+  --rojo: #b43232;
+
+  --sans: 'Schibsted Grotesk', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+
+  --ancho: 1160px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--azul);
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--azul);
+  color: #fff;
+}
+
+/* ---------- estructura ---------- */
+
+.contenedor {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.seccion {
+  padding: 5.5rem 0;
+  scroll-margin-top: 4.5rem;
+}
+.seccion--linea {
+  border-top: 1px solid var(--linea);
+}
+
+@media (min-width: 48rem) {
+  .seccion {
+    padding: 8rem 0;
+  }
+}
+
+/* Etiqueta en mono: ordena la página y marca el tono técnico. */
+.antetitulo {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gris-2);
+}
+
+.titulo {
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  margin: 1.5rem 0 0;
+  max-width: 22ch;
+}
+
+.entrada {
+  margin-top: 1.5rem;
+  color: var(--gris);
+  max-width: 46ch;
+  font-size: 1.05rem;
+}
+
+/*
+  La flor del mburucuyá va en línea dentro del HTML, no como máscara CSS:
+  las máscaras con archivo externo no cargan al abrir la página por file://
+  y el logo desaparecía. Los trazos toman el color de `color`, así que la
+  misma flor sirve en azul en la barra y en lila en el pie.
+
+  Los archivos flor.svg y flor-marca.svg se conservan como fuente: son los
+  que se editan y se pegan de nuevo si la marca cambia.
+*/
+.flor {
+  display: block;
+  overflow: visible;
+}
+
+/*
+  Transiciones de entrada. Las clases las pone app.js al arrancar, no el HTML:
+  si el JavaScript no corre, nada queda escondido y la página se lee igual.
+  El desfase entre hermanos lo calcula el script en --retraso.
+*/
+.aparece {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--retraso, 0ms);
+}
+.aparece.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* El filete que separa dos secciones se dibuja de izquierda a derecha. */
+.linea-animada {
+  border-top: 0;
+  position: relative;
+}
+.linea-animada::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--linea);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.linea-animada.visible::before {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aparece,
+  .aparece.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .linea-animada::before {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
+.saltar {
+  position: absolute;
+  left: -9999px;
+}
+.saltar:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 60;
+  background: var(--papel);
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--azul);
+}
+
+/* ---------- botones ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid var(--azul);
+  border-radius: 3px;
+  background: var(--azul);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease,
+    color 0.16s ease;
+}
+.boton:hover {
+  background: var(--azul-hover);
+  border-color: var(--azul-hover);
+}
+.boton[disabled] {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.boton--linea {
+  background: transparent;
+  color: var(--tinta);
+  border-color: var(--linea);
+}
+.boton--linea:hover {
+  background: transparent;
+  border-color: var(--tinta);
+  color: var(--tinta);
+}
+
+.boton--chico {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.88rem;
+}
+
+/* ---------- barra superior ---------- */
+
+/* Las tres franjas de la bandera, reducidas a una línea. */
+.franja-bandera {
+  height: 3px;
+  background: linear-gradient(
+    to bottom,
+    var(--azul) 0 33.33%,
+    var(--rojo) 33.33% 66.66%,
+    var(--azul) 66.66% 100%
+  );
+}
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--linea);
+}
+
+.barra__nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--tinta);
+  flex-shrink: 0;
+}
+.marca .flor {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--azul);
+  flex-shrink: 0;
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* Al pasar por encima, la flor avanza un pétalo: 360 / 5. */
+.marca:hover .flor {
+  transform: rotate(72deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marca:hover .flor {
+    transform: none;
+  }
+}
+.marca__nombre {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.marca__lugar {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gris-2);
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--linea);
+}
+
+.barra__enlaces {
+  display: none;
+  margin-left: auto;
+  gap: 2rem;
+  align-items: center;
+}
+.barra__enlaces a {
+  font-size: 0.92rem;
+  color: var(--gris);
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+.barra__enlaces a:hover {
+  color: var(--tinta);
+}
+
+.barra .boton {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+@media (min-width: 64rem) {
+  .barra__enlaces {
+    display: flex;
+  }
+  .barra .boton {
+    margin-left: 0;
+  }
+}
+@media (max-width: 26rem) {
+  .marca__lugar {
+    display: none;
+  }
+}
+
+/* ---------- portada ---------- */
+
+.portada {
+  padding: 4.5rem 0 5rem;
+}
+.portada__grilla {
+  display: grid;
+  gap: 3.5rem;
+  align-items: center;
+}
+.portada h1 {
+  font-size: clamp(2.9rem, 7vw, 5.6rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  margin: 1.75rem 0 0;
+  max-width: 16ch;
+}
+.portada__bajada {
+  margin-top: 1.75rem;
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--gris);
+  max-width: 44ch;
+}
+.portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+.portada__micro {
+  margin-top: 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--gris-2);
+}
+/*
+  La flor de la portada gira sobre su propio eje, inclinada en perspectiva:
+  se ve como un disco en ángulo y no como un dibujo plano. El giro es lento
+  a propósito —una vuelta cada 54 s— para que lea como mecanismo en marcha
+  y no como indicador de carga.
+*/
+.portada__marca {
+  display: none;
+  justify-content: center;
+  perspective: 900px;
+}
+.portada__marca .flor {
+  width: 18rem;
+  height: 18rem;
+  color: var(--azul);
+  opacity: 0.92;
+  transform: rotateX(30deg) rotate(0deg);
+  transform-origin: 50% 50%;
+  animation: girar 54s linear infinite;
+  will-change: transform;
+}
+
+@keyframes girar {
+  from {
+    transform: rotateX(30deg) rotate(0deg);
+  }
+  to {
+    transform: rotateX(30deg) rotate(360deg);
+  }
+}
+
+/* Sin movimiento: se conserva la inclinación, se detiene el giro. */
+@media (prefers-reduced-motion: reduce) {
+  .portada__marca .flor {
+    animation: none;
+    transform: rotateX(30deg) rotate(18deg);
+  }
+}
+
+@media (min-width: 64rem) {
+  .portada {
+    padding: 7rem 0 7.5rem;
+  }
+  .portada__grilla {
+    grid-template-columns: 1.25fr 0.75fr;
+  }
+  .portada__marca {
+    display: flex;
+  }
+}
+
+/* ---------- franja de territorio ---------- */
+
+.territorio {
+  background: var(--azul);
+  color: #fff;
+}
+.territorio__grilla {
+  display: grid;
+  gap: 1.25rem;
+  padding-top: 1.75rem;
+  padding-bottom: 1.75rem;
+}
+.territorio p {
+  font-size: 1.02rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 60ch;
+}
+.territorio strong {
+  color: #fff;
+  font-weight: 500;
+}
+.territorio ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+}
+.territorio li {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (min-width: 62rem) {
+  .territorio__grilla {
+    grid-template-columns: 1.5fr 1fr;
+    align-items: center;
+  }
+  .territorio ul {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- problemas ---------- */
+
+.sintomas {
+  display: grid;
+  margin-top: 3.5rem;
+  border-top: 1px solid var(--linea);
+}
+.sintomas li {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--linea);
+  color: var(--gris);
+  font-size: 1.02rem;
+}
+
+@media (min-width: 48rem) {
+  .sintomas {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 4rem;
+  }
+}
+
+/* ---------- soluciones ---------- */
+
+.columnas {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 3.5rem;
+}
+.columna {
+  border-top: 1px solid var(--tinta);
+  padding-top: 1.5rem;
+}
+.columna h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.columna__resumen {
+  margin-top: 0.9rem;
+  color: var(--gris);
+  font-size: 0.98rem;
+}
+.columna__lista {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.55rem;
+}
+.columna__lista li {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--gris-2);
+}
+
+@media (min-width: 56rem) {
+  .columnas--tres {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .columnas--dos {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
+
+.secundarias {
+  display: grid;
+  gap: 2rem;
+  margin-top: 4.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--linea);
+}
+.secundaria h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.secundaria p {
+  margin-top: 0.4rem;
+  font-size: 0.94rem;
+  color: var(--gris);
+}
+@media (min-width: 56rem) {
+  .secundarias {
+    grid-template-columns: 0.6fr repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* ---------- proceso ---------- */
+
+.etapas {
+  display: grid;
+  gap: 2.25rem;
+  margin-top: 3.5rem;
+}
+.etapa {
+  border-top: 1px solid var(--linea);
+  padding-top: 1.25rem;
+}
+.etapa__numero {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--azul);
+  letter-spacing: 0.04em;
+}
+.etapa h3 {
+  margin-top: 0.9rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.etapa p {
+  margin-top: 0.6rem;
+  font-size: 0.94rem;
+  color: var(--gris);
+}
+@media (min-width: 56rem) {
+  .etapas {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.apunte {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--linea);
+  font-size: 0.96rem;
+  color: var(--gris);
+  max-width: 62ch;
+}
+
+/* ---------- demostraciones ---------- */
+
+.demo__captura {
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--azul-tinte);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 51, 153, 0.5);
+  text-align: center;
+  padding: 0 1.5rem;
+}
+.demo h3 {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.demo__antetitulo {
+  margin-top: 1.75rem;
+}
+.demo dl {
+  margin: 1.75rem 0 0;
+  display: grid;
+  gap: 1.1rem;
+}
+.demo dt {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gris-2);
+}
+.demo dd {
+  margin: 0.3rem 0 0;
+  font-size: 0.96rem;
+  color: var(--gris);
+}
+.demo__vivo {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--linea);
+  font-size: 0.94rem;
+  color: var(--tinta);
+}
+.demo__vivo strong {
+  font-weight: 600;
+}
+
+/* ---------- estamos acá ---------- */
+
+.aca__grilla {
+  display: grid;
+  gap: 3.5rem;
+}
+.aca__grilla p {
+  color: var(--gris);
+  max-width: 50ch;
+  margin-top: 1.5rem;
+}
+.rubros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+.rubros li {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--gris);
+  border: 1px solid var(--linea);
+  border-radius: 2px;
+  padding: 0.3rem 0.65rem;
+}
+.foto {
+  margin: 0;
+}
+.foto__marco {
+  aspect-ratio: 4 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--linea-2);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gris-2);
+  text-align: center;
+  padding: 0 1.5rem;
+}
+.foto figcaption {
+  margin-top: 0.85rem;
+  font-size: 0.86rem;
+  color: var(--gris-2);
+}
+@media (min-width: 64rem) {
+  .aca__grilla {
+    grid-template-columns: 1fr 0.72fr;
+    gap: 5rem;
+  }
+}
+
+/* ---------- preguntas ---------- */
+
+.preguntas {
+  margin-top: 3.5rem;
+  max-width: 52rem;
+  border-top: 1px solid var(--linea);
+}
+.pregunta {
+  border-bottom: 1px solid var(--linea);
+}
+.pregunta summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.35rem 0;
+  cursor: pointer;
+  font-size: 1.12rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  list-style: none;
+}
+.pregunta summary::-webkit-details-marker {
+  display: none;
+}
+.pregunta .mas {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+.pregunta .mas::before,
+.pregunta .mas::after {
+  content: '';
+  position: absolute;
+  background: var(--azul);
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+.pregunta .mas::after {
+  transform: rotate(90deg);
+}
+.pregunta[open] .mas {
+  transform: rotate(45deg);
+}
+.pregunta p {
+  padding-bottom: 1.5rem;
+  max-width: 62ch;
+  color: var(--gris);
+  font-size: 0.98rem;
+}
+
+/* ---------- diagnóstico ---------- */
+
+.diagnostico__grilla {
+  display: grid;
+  gap: 3.5rem;
+  align-items: start;
+}
+@media (min-width: 64rem) {
+  .diagnostico__grilla {
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 5rem;
+  }
+}
+
+.datos {
+  margin: 2.5rem 0 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--linea);
+}
+.datos > div {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--linea);
+}
+.datos dt {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gris-2);
+  width: 6.5rem;
+  flex-shrink: 0;
+  padding-top: 0.15rem;
+}
+.datos dd {
+  margin: 0;
+  font-size: 0.96rem;
+  color: var(--tinta);
+}
+
+.campos {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 40rem) {
+  .campos {
+    grid-template-columns: 1fr 1fr;
+  }
+  .campos .ancho {
+    grid-column: 1 / -1;
+  }
+}
+
+.etiqueta {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gris-2);
+  margin-bottom: 0.5rem;
+}
+
+/* Campos sin caja: sólo una línea, que se marca al enfocar. */
+.campo {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--linea);
+  border-radius: 0;
+  padding: 0.5rem 0;
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--tinta);
+  transition: border-color 0.16s ease;
+}
+.campo:hover {
+  border-bottom-color: var(--gris-2);
+}
+.campo:focus {
+  outline: none;
+  border-bottom-color: var(--azul);
+  border-bottom-width: 2px;
+  padding-bottom: calc(0.5rem - 1px);
+}
+.campo::placeholder {
+  color: var(--gris-2);
+}
+select.campo {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--gris) 50%),
+    linear-gradient(135deg, var(--gris) 50%, transparent 50%);
+  background-position: calc(100% - 10px) 55%, calc(100% - 5px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.5rem;
+}
+textarea.campo {
+  resize: vertical;
+  min-height: 5.5rem;
+}
+
+.pista {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--gris-2);
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+}
+.opciones label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.94rem;
+  color: var(--gris);
+  cursor: pointer;
+}
+.opciones input {
+  accent-color: var(--azul);
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.trampa {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.envio {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+}
+.estado {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--gris);
+}
+.estado[data-tono='ok'] {
+  color: var(--azul);
+}
+.estado[data-tono='error'] {
+  color: var(--rojo);
+}
+
+.privacidad {
+  margin-top: 1.75rem;
+  font-size: 0.84rem;
+  color: var(--gris-2);
+  max-width: 54ch;
+}
+
+/* ---------- pie ---------- */
+
+.pie {
+  background: var(--tinta);
+  color: #fff;
+  padding: 4.5rem 0 3rem;
+}
+.pie .marca {
+  color: #fff;
+}
+.pie .marca .flor {
+  color: var(--lila);
+}
+.pie__grilla {
+  display: grid;
+  gap: 2.5rem;
+}
+.pie__lema {
+  margin-top: 1.25rem;
+  max-width: 26ch;
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.pie__bloque {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  font-size: 0.94rem;
+}
+.pie__titulo {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.35rem;
+}
+.pie__bloque a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+.pie__bloque a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.pie__bloque span {
+  color: rgba(255, 255, 255, 0.55);
+}
+@media (min-width: 56rem) {
+  .pie__grilla {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+.pie__cierre {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+/* Diecinueve puntos: los diecinueve departamentos, como en la bandera. */
+.departamentos {
+  display: flex;
+  gap: 6px;
+}
+.departamentos span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--lila);
+}
+.firma,
+.copyright {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+.copyright {
+  margin-top: 1.25rem;
+}
