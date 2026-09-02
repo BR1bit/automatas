@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Automatizá procesos y convertí datos en decisiones · automatas</title>
+    <title>Automatiza procesos. Mejora tus decisiones · automatas</title>
     <meta
       name="description"
       content="Consultoría en automatización de procesos, inteligencia artificial aplicada y automatización de gestión. Con base en Paysandú, Uruguay."
@@ -18,7 +18,7 @@
     <meta property="og:site_name" content="automatas" />
     <meta
       property="og:title"
-      content="Automatizá procesos y convertí datos en decisiones"
+      content="Automatiza procesos. Mejora tus decisiones"
     />
     <meta
       property="og:description"
@@ -67,19 +67,24 @@
     <header class="barra">
       <nav class="contenedor barra__nav" aria-label="Principal">
         <a class="marca" href="#">
-          <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle cx="80.00" cy="20.00" r="8"/><circle cx="137.06" cy="61.46" r="8"/><circle cx="115.27" cy="128.54" r="8"/><circle cx="44.73" cy="128.54" r="8"/><circle cx="22.94" cy="61.46" r="8"/></g></svg>
+          <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle class="nodo nodo-a" cx="80.00" cy="20.00" r="8"/><circle class="nodo nodo-b" cx="137.06" cy="61.46" r="8"/><circle class="nodo nodo-c" cx="115.27" cy="128.54" r="8"/><circle class="nodo nodo-d" cx="44.73" cy="128.54" r="8"/><circle class="nodo nodo-e" cx="22.94" cy="61.46" r="8"/></g></svg>
           <span class="marca__nombre">automatas</span>
           <span class="marca__lugar">Paysandú, UY</span>
         </a>
 
         <ul class="barra__enlaces">
-          <li><a href="#soluciones">Soluciones</a></li>
           <li><a href="#proceso">Cómo trabajamos</a></li>
           <li><a href="#demostraciones">Demostraciones</a></li>
           <li><a href="#preguntas">Preguntas</a></li>
         </ul>
 
-        <a class="boton boton--chico" href="#diagnostico">Solicitar diagnóstico</a>
+        <button
+          type="button"
+          class="boton boton--chico"
+          data-abrir-diagnostico
+        >
+          Agendar entrevista
+        </button>
       </nav>
     </header>
 
@@ -92,7 +97,7 @@
               Consultoría en automatización · Paysandú, Uruguay
             </p>
 
-            <h1>Automatizá procesos y convertí datos en decisiones</h1>
+            <h1>Automatiza procesos. Mejora tus decisiones</h1>
 
             <p class="portada__bajada">
               Analizamos cómo trabaja tu organización, detectamos las tareas que
@@ -102,9 +107,11 @@
             </p>
 
             <div class="portada__acciones">
-              <a class="boton" href="#diagnostico">Solicitar diagnóstico</a>
-              <a class="boton boton--linea" href="#soluciones"
-                >Conocer las soluciones</a
+              <button type="button" class="boton" data-abrir-diagnostico>
+                Agendar entrevista
+              </button>
+              <a class="boton boton--linea" href="#demostraciones"
+                >Ver demostraciones</a
               >
             </div>
 
@@ -114,7 +121,7 @@
           </div>
 
           <div class="portada__marca" aria-hidden="true">
-            <svg class="flor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="4.6"><path d="M80.00 64.00 Q99.00 41.00 80.00 18.00 Q61.00 41.00 80.00 64.00Z"/><path d="M95.22 75.06 Q122.96 86.02 138.97 60.84 Q111.22 49.88 95.22 75.06Z"/><path d="M89.40 92.94 Q87.55 122.72 116.44 130.16 Q118.29 100.38 89.40 92.94Z"/><path d="M70.60 92.94 Q41.71 100.38 43.56 130.16 Q72.45 122.72 70.60 92.94Z"/><path d="M64.78 75.06 Q48.78 49.88 21.03 60.84 Q37.04 86.02 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g stroke-width="4.6"><circle cx="80.00" cy="18.00" r="6.5"/><circle cx="138.97" cy="60.84" r="6.5"/><circle cx="116.44" cy="130.16" r="6.5"/><circle cx="43.56" cy="130.16" r="6.5"/><circle cx="21.03" cy="60.84" r="6.5"/></g></svg>
+            <svg class="flor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="4.6"><path d="M80.00 64.00 Q99.00 41.00 80.00 18.00 Q61.00 41.00 80.00 64.00Z"/><path d="M95.22 75.06 Q122.96 86.02 138.97 60.84 Q111.22 49.88 95.22 75.06Z"/><path d="M89.40 92.94 Q87.55 122.72 116.44 130.16 Q118.29 100.38 89.40 92.94Z"/><path d="M70.60 92.94 Q41.71 100.38 43.56 130.16 Q72.45 122.72 70.60 92.94Z"/><path d="M64.78 75.06 Q48.78 49.88 21.03 60.84 Q37.04 86.02 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g stroke-width="4.6"><circle class="nodo nodo-a" cx="80.00" cy="18.00" r="6.5"/><circle class="nodo nodo-b" cx="138.97" cy="60.84" r="6.5"/><circle class="nodo nodo-c" cx="116.44" cy="130.16" r="6.5"/><circle class="nodo nodo-d" cx="43.56" cy="130.16" r="6.5"/><circle class="nodo nodo-e" cx="21.03" cy="60.84" r="6.5"/></g></svg>
           </div>
         </div>
       </section>
@@ -176,89 +183,6 @@
             <li>Necesitás incorporar sensores o monitoreo.</li>
             <li>Querés usar IA con un objetivo concreto y con control.</li>
           </ul>
-        </div>
-      </section>
-
-      <!-- ---------- soluciones ---------- -->
-      <section class="seccion seccion--linea" id="soluciones">
-        <div class="contenedor">
-          <p class="antetitulo">Soluciones</p>
-          <h2 class="titulo">Tres capacidades que se combinan según el problema</h2>
-          <p class="entrada">
-            No vendemos tecnología aislada. La herramienta se elige después de
-            entender el proceso, nunca antes.
-          </p>
-
-          <div class="columnas columnas--tres">
-            <article class="columna">
-              <h3>Procesos</h3>
-              <p class="columna__resumen">
-                Mapeamos cómo se trabaja hoy, encontramos las demoras y los
-                errores, y ordenamos las mejoras por impacto y viabilidad.
-              </p>
-              <ul class="columna__lista">
-                <li>Mapa del proceso actual</li>
-                <li>Tareas repetitivas, demoras y errores</li>
-                <li>Prioridades según impacto y costo</li>
-                <li>Plan con indicadores de éxito</li>
-              </ul>
-            </article>
-
-            <article class="columna">
-              <h3>Inteligencia artificial aplicada</h3>
-              <p class="columna__resumen">
-                Asistentes que responden con tus propios documentos,
-                clasificación de información y borradores que una persona revisa
-                antes de que salgan.
-              </p>
-              <ul class="columna__lista">
-                <li>Asistentes sobre documentos autorizados</li>
-                <li>Clasificación y extracción de datos</li>
-                <li>Borradores para revisión humana</li>
-                <li>Búsqueda interna inteligente</li>
-              </ul>
-            </article>
-
-            <article class="columna">
-              <h3>Automatización de gestión</h3>
-              <p class="columna__resumen">
-                Solicitudes que se reciben y se clasifican solas, avisos
-                automáticos, informes que se generan y sistemas que por fin
-                intercambian datos.
-              </p>
-              <ul class="columna__lista">
-                <li>Recepción y clasificación de solicitudes</li>
-                <li>Avisos, recordatorios y seguimiento</li>
-                <li>Generación de documentos e informes</li>
-                <li>Integración entre formularios y sistemas</li>
-              </ul>
-            </article>
-          </div>
-
-          <div class="secundarias">
-            <p class="antetitulo">También hacemos</p>
-            <article class="secundaria">
-              <h3>Monitoreo e IoT</h3>
-              <p>
-                Sensores, paneles con registro histórico y alertas cuando una
-                variable se sale de rango.
-              </p>
-            </article>
-            <article class="secundaria">
-              <h3>Infraestructura</h3>
-              <p>
-                Servidores locales o en la nube, redes, acceso remoto, respaldo y
-                recuperación.
-              </p>
-            </article>
-            <article class="secundaria">
-              <h3>Educación</h3>
-              <p>
-                Inscripciones, seguimiento, documentación y comunicación para
-                instituciones educativas.
-              </p>
-            </article>
-          </div>
         </div>
       </section>
 
@@ -333,52 +257,12 @@
             información de otras organizaciones sin autorización escrita.
           </p>
 
-          <div class="columnas columnas--dos">
+          <div class="columnas">
             <article class="demo">
-              <!-- TODO Bruno: reemplazar por captura o video corto de la demo real. -->
-              <div class="demo__captura">Captura de la demostración</div>
-              <p class="antetitulo demo__antetitulo">Prototipo 1 · Gestión</p>
-              <h3>Solicitudes que se resuelven solas hasta la última milla</h3>
-              <dl>
-                <div>
-                  <dt>Problema</dt>
-                  <dd>
-                    Los pedidos llegan por correo, WhatsApp y en mostrador.
-                    Alguien los copia a una planilla, avisa al responsable y
-                    contesta a mano.
-                  </dd>
-                </div>
-                <div>
-                  <dt>Cómo se hacía antes</dt>
-                  <dd>Entre 10 y 20 minutos por solicitud, y algunas se pierden.</dd>
-                </div>
-                <div>
-                  <dt>Qué hace la solución</dt>
-                  <dd>
-                    Un formulario recibe el pedido, la IA lo clasifica y resume,
-                    el sistema registra el caso, avisa al responsable por
-                    WhatsApp y devuelve un acuse inmediato a quien escribió.
-                  </dd>
-                </div>
-                <div>
-                  <dt>Resultado</dt>
-                  <dd>
-                    Registro completo, respuesta en el momento y una sola bandeja
-                    donde mirar.
-                  </dd>
-                </div>
-              </dl>
-              <p class="demo__vivo">
-                <strong>Está corriendo en esta página.</strong> El formulario de
-                más abajo es exactamente este prototipo: cuando nos escribas, vas
-                a estar usando la solución.
-              </p>
-            </article>
-
-            <article class="demo">
-              <!-- TODO Bruno: reemplazar por captura o video corto de la demo real. -->
-              <div class="demo__captura">Captura de la demostración</div>
-              <p class="antetitulo demo__antetitulo">Prototipo 2 · Operativo</p>
+              <a class="demo__captura demo__captura--enlace" href="demo/panel.html" target="_blank" rel="noopener">
+                <span class="demo__jugar" aria-hidden="true">Abrir panel en vivo →</span>
+              </a>
+              <p class="antetitulo demo__antetitulo">Prototipo 1 · Operativo</p>
               <h3>Indicadores en tiempo real y alertas antes del problema</h3>
               <dl>
                 <div>
@@ -408,48 +292,55 @@
                   </dd>
                 </div>
               </dl>
+              <p class="demo__vivo">
+                <strong>Es un panel funcionando de verdad.</strong> Datos
+                simulados de una cámara de frío: temperatura, alertas y
+                registro de eventos en vivo, no una captura de pantalla.
+              </p>
+            </article>
+
+            <article class="demo">
+              <a class="demo__captura demo__captura--enlace" href="demo/aprobaciones.html" target="_blank" rel="noopener">
+                <span class="demo__jugar" aria-hidden="true">Abrir bandeja en vivo →</span>
+              </a>
+              <p class="antetitulo demo__antetitulo">Prototipo 2 · Administrativo</p>
+              <h3>Solicitudes que se aprueban sin cadenas de mails</h3>
+              <dl>
+                <div>
+                  <dt>Problema</dt>
+                  <dd>
+                    Compras, gastos y licencias se aprueban por mail. Nadie
+                    sabe en qué quedó cada pedido ni cuánto tarda en
+                    resolverse.
+                  </dd>
+                </div>
+                <div>
+                  <dt>Cómo se hacía antes</dt>
+                  <dd>Cadenas de correo, planillas sueltas y seguimiento manual.</dd>
+                </div>
+                <div>
+                  <dt>Qué hace la solución</dt>
+                  <dd>
+                    Cada solicitud entra a una bandeja, el sistema calcula su
+                    prioridad solo y queda un registro de quién decidió qué
+                    y cuándo.
+                  </dd>
+                </div>
+                <div>
+                  <dt>Resultado</dt>
+                  <dd>
+                    Nada se pierde, lo urgente se distingue solo y hay un
+                    historial completo de decisiones.
+                  </dd>
+                </div>
+              </dl>
+              <p class="demo__vivo">
+                <strong>Es una bandeja funcionando de verdad.</strong>
+                Solicitudes, prioridad y aprobaciones en vivo, con datos
+                simulados — no una captura de pantalla.
+              </p>
             </article>
           </div>
-        </div>
-      </section>
-
-      <!-- ---------- estamos acá ---------- -->
-      <section class="seccion seccion--linea">
-        <div class="contenedor aca__grilla">
-          <div>
-            <p class="antetitulo">Estamos acá</p>
-            <h2 class="titulo">Consultoría sanducera, no un proveedor a distancia</h2>
-            <p>
-              Conocemos el tejido productivo del departamento. Podemos ir a ver
-              el proceso en la planta, en el aula o en el mostrador, y volver la
-              semana siguiente con una propuesta concreta. Cuando el proyecto lo
-              justifica, viajamos al resto del litoral.
-            </p>
-            <p>
-              Trabajamos con estándares abiertos y APIs, documentamos todo lo que
-              entregamos y dejamos los accesos en manos de la organización. Si
-              mañana decidís seguir sin nosotros, el sistema sigue funcionando.
-            </p>
-            <ul class="rubros">
-              <li>Agroindustria</li>
-              <li>Citricultura</li>
-              <li>Forestación</li>
-              <li>Frigorífico</li>
-              <li>Textil</li>
-              <li>Comercio</li>
-              <li>Servicios</li>
-              <li>Educación técnica</li>
-            </ul>
-          </div>
-
-          <!-- TODO Bruno: foto propia de Paysandú. Nunca banco de imágenes. -->
-          <figure class="foto">
-            <div class="foto__marco">Foto propia · Paysandú</div>
-            <figcaption>
-              Sesión pendiente: costanera y río, un galpón, un escritorio real,
-              un aula técnica.
-            </figcaption>
-          </figure>
         </div>
       </section>
 
@@ -533,193 +424,96 @@
         </div>
       </section>
 
-      <!-- ---------- diagnóstico ---------- -->
-      <section class="seccion seccion--linea" id="diagnostico">
-        <div class="contenedor diagnostico__grilla">
-          <div>
-            <p class="antetitulo">Primer paso</p>
-            <h2 class="titulo">Contanos qué proceso querés mejorar</h2>
-            <p class="entrada">
-              No hace falta que sepas qué tecnología usar. Describinos el
-              problema, cómo se trabaja hoy y qué resultado te gustaría
-              conseguir. Analizamos la viabilidad y proponemos un primer paso
-              concreto.
-            </p>
+      <!-- ---------- diagnóstico (ventana flotante) ---------- -->
+      <dialog id="diagnostico" class="dialogo" aria-labelledby="dialogo-titulo">
+        <div class="dialogo__cuerpo">
+          <button
+            type="button"
+            class="dialogo__cerrar"
+            data-cerrar-dialogo
+            aria-label="Cerrar"
+          ></button>
 
-            <dl class="datos">
-              <div>
-                <dt>WhatsApp</dt>
-                <dd>
-                  <a
-                    href="https://wa.me/5989XXXXXXX?text=Hola%2C%20quiero%20consultar%20por%20un%20proceso%20que%20necesitamos%20mejorar."
-                    rel="noopener"
-                    >+598 9X XXX XXX</a
-                  >
-                </dd>
-              </div>
-              <div>
-                <dt>Correo</dt>
-                <dd><a href="mailto:hola@automatas.app">hola@automatas.app</a></dd>
-              </div>
-              <div>
-                <dt>Horario</dt>
-                <dd>Lunes a viernes, 9 a 18 h</dd>
-              </div>
-            </dl>
-          </div>
+          <p class="antetitulo">Agendar</p>
+          <h2 id="dialogo-titulo" class="titulo dialogo__titulo">
+            Elegí un horario para la entrevista
+          </h2>
+          <p class="entrada">
+            Es una primera conversación breve para entender tu proceso, sin
+            costo. Si preferís contarnos antes por escrito, más abajo tenés
+            WhatsApp y correo.
+          </p>
 
-          <form id="form-diagnostico" novalidate>
-            <div class="campos">
-              <div>
-                <label class="etiqueta" for="organizacion">Organización *</label>
-                <input
-                  class="campo"
-                  id="organizacion"
-                  name="organizacion"
-                  type="text"
-                  required
-                  autocomplete="organization"
-                />
-              </div>
+          <div
+            id="cal-embed-entrevista"
+            class="dialogo__calendario"
+            style="min-height: 32rem"
+          ></div>
 
-              <div>
-                <label class="etiqueta" for="persona">Nombre y rol *</label>
-                <input
-                  class="campo"
-                  id="persona"
-                  name="persona"
-                  type="text"
-                  required
-                  autocomplete="name"
-                />
-              </div>
+          <script type="text/javascript">
+              (function (C, A, L) {
+                let p = function (a, ar) { a.q.push(ar); };
+                let d = C.document;
+                C.Cal = C.Cal || function () {
+                  let cal = C.Cal;
+                  let ar = arguments;
+                  if (!cal.loaded) {
+                    cal.ns = {};
+                    cal.q = cal.q || [];
+                    d.head.appendChild(d.createElement("script")).src = A;
+                    cal.loaded = true;
+                  }
+                  if (ar[0] === L) {
+                    const api = function () { p(api, arguments); };
+                    const namespace = ar[1];
+                    api.q = api.q || [];
+                    if (typeof namespace === "string") {
+                      cal.ns[namespace] = cal.ns[namespace] || api;
+                      p(cal.ns[namespace], ar);
+                      p(cal, ["initNamespace", namespace]);
+                    } else p(cal, ar);
+                    return;
+                  }
+                  p(cal, ar);
+                };
+              })(window, "https://cal.com/embed/embed.js", "init");
 
-              <div>
-                <label class="etiqueta" for="rubro">Rubro *</label>
-                <select class="campo" id="rubro" name="rubro" required>
-                  <option value="">Elegí una opción</option>
-                  <option>Agroindustria</option>
-                  <option>Citricultura</option>
-                  <option>Forestación</option>
-                  <option>Frigorífico</option>
-                  <option>Textil</option>
-                  <option>Comercio</option>
-                  <option>Servicios</option>
-                  <option>Educación</option>
-                  <option>Otro</option>
-                </select>
-              </div>
+              Cal("init", "entrevista", { origin: "https://cal.com" });
+              Cal.ns.entrevista("inline", {
+                elementOrSelector: "#cal-embed-entrevista",
+                calLink: "bruno-rodriguez-wtalvm/30min",
+                config: { layout: "month_view" },
+              });
+              Cal.ns.entrevista("ui", {
+                theme: "light",
+                styles: { branding: { brandColor: "#003399" } },
+                hideEventTypeDetails: false,
+                layout: "month_view",
+              });
+            </script>
 
-              <div>
-                <label class="etiqueta" for="localidad">Localidad *</label>
-                <select class="campo" id="localidad" name="localidad" required>
-                  <option value="">Elegí una opción</option>
-                  <option>Paysandú ciudad</option>
-                  <option>Interior del departamento</option>
-                  <option>Otro punto del litoral</option>
-                  <option>Resto del país</option>
-                </select>
-              </div>
-
-              <div class="ancho">
-                <label class="etiqueta" for="proceso"
-                  >¿Qué proceso querés mejorar? *</label
+          <dl class="datos dialogo__datos">
+            <div>
+              <dt>WhatsApp</dt>
+              <dd>
+                <a
+                  href="https://wa.me/5989XXXXXXX?text=Hola%2C%20quiero%20consultar%20por%20un%20proceso%20que%20necesitamos%20mejorar."
+                  rel="noopener"
+                  >+598 9X XXX XXX</a
                 >
-                <textarea
-                  class="campo"
-                  id="proceso"
-                  name="proceso"
-                  rows="3"
-                  required
-                  placeholder="Por ejemplo: cada pedido que entra por WhatsApp lo copiamos a una planilla, avisamos al depósito y contestamos a mano."
-                ></textarea>
-                <p class="pista">
-                  Este es el campo que más nos sirve. Contalo con tus palabras.
-                </p>
-              </div>
-
-              <fieldset class="ancho">
-                <legend class="etiqueta">¿Cómo se hace hoy?</legend>
-                <div class="opciones">
-                  <label
-                    ><input type="checkbox" name="como" value="En papel" />En
-                    papel</label
-                  >
-                  <label
-                    ><input type="checkbox" name="como" value="En planillas" />En
-                    planillas</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      name="como"
-                      value="En un sistema propio"
-                    />En un sistema propio</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      name="como"
-                      value="Por correo o mensajes"
-                    />Por correo o mensajes</label
-                  >
-                  <label
-                    ><input type="checkbox" name="como" value="No sabría decir" />No
-                    sabría decir</label
-                  >
-                </div>
-              </fieldset>
-
-              <div>
-                <label class="etiqueta" for="frecuencia">¿Cada cuánto ocurre?</label>
-                <select class="campo" id="frecuencia" name="frecuencia">
-                  <option value="">Elegí una opción</option>
-                  <option>Varias veces por día</option>
-                  <option>Una vez por día</option>
-                  <option>Algunas veces por semana</option>
-                  <option>Una vez por semana o menos</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="etiqueta" for="contacto">WhatsApp o correo *</label>
-                <input
-                  class="campo"
-                  id="contacto"
-                  name="contacto"
-                  type="text"
-                  required
-                />
-              </div>
+              </dd>
             </div>
-
-            <!-- Trampa para robots: si viene con contenido, se descarta el envío. -->
-            <div class="trampa" aria-hidden="true">
-              <label for="apellido2">No completar</label>
-              <input
-                id="apellido2"
-                name="apellido2"
-                type="text"
-                tabindex="-1"
-                autocomplete="off"
-              />
+            <div>
+              <dt>Correo</dt>
+              <dd><a href="mailto:hola@automatas.app">hola@automatas.app</a></dd>
             </div>
-
-            <div class="envio">
-              <button type="submit" class="boton">
-                Enviar y agendar el diagnóstico
-              </button>
-              <span class="estado" role="status" aria-live="polite"></span>
+            <div>
+              <dt>Horario</dt>
+              <dd>Lunes a viernes, 9 a 18 h</dd>
             </div>
-
-            <p class="privacidad">
-              Guardamos lo que nos escribas solamente para responderte y preparar
-              la reunión. No lo compartimos con terceros y lo damos de baja si
-              nos lo pedís.
-            </p>
-          </form>
+          </dl>
         </div>
-      </section>
+      </dialog>
     </main>
 
     <footer class="pie">
@@ -727,7 +521,7 @@
         <div class="pie__grilla">
           <div>
             <span class="marca">
-              <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle cx="80.00" cy="20.00" r="8"/><circle cx="137.06" cy="61.46" r="8"/><circle cx="115.27" cy="128.54" r="8"/><circle cx="44.73" cy="128.54" r="8"/><circle cx="22.94" cy="61.46" r="8"/></g></svg>
+              <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle class="nodo nodo-a" cx="80.00" cy="20.00" r="8"/><circle class="nodo nodo-b" cx="137.06" cy="61.46" r="8"/><circle class="nodo nodo-c" cx="115.27" cy="128.54" r="8"/><circle class="nodo nodo-d" cx="44.73" cy="128.54" r="8"/><circle class="nodo nodo-e" cx="22.94" cy="61.46" r="8"/></g></svg>
               <span class="marca__nombre">automatas</span>
             </span>
             <p class="pie__lema">

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="es-UY">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel de monitoreo · demo · automatas</title>
+    <meta
+      name="description"
+      content="Demostración del prototipo operativo: indicadores en tiempo real y alertas sobre datos simulados."
+    />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../estilos.css" />
+
+    <style>
+      /*
+        Estilos propios del panel. Los tokens y las tipografías vienen de
+        ../estilos.css; acá solo está lo que no existe en la landing.
+        Todo el dato que se muestra es simulado: lo genera panel, abajo.
+      */
+      .aviso-demo {
+        background: var(--lila);
+        color: #fff;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 0.45rem 1rem;
+      }
+
+      .panel {
+        padding: 2.5rem 0 5rem;
+      }
+
+      .panel__cabecera {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .panel__cabecera h1 {
+        font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+        font-weight: 500;
+      }
+      .reloj {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--gris-2);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* estado general: una sola pastilla, arriba de todo */
+      .estado-general {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin-top: 1.25rem;
+        border: 1px solid var(--linea);
+        border-radius: 999px;
+        padding: 0.4rem 1rem;
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--gris);
+      }
+      .estado-general .punto {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--azul);
+      }
+      .estado-general[data-alerta='si'] {
+        border-color: var(--rojo);
+        color: var(--rojo);
+      }
+      .estado-general[data-alerta='si'] .punto {
+        background: var(--rojo);
+        animation: latido 1.1s ease-in-out infinite;
+      }
+      @keyframes latido {
+        50% {
+          opacity: 0.35;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .estado-general[data-alerta='si'] .punto {
+          animation: none;
+        }
+      }
+
+      .tiles {
+        display: grid;
+        gap: 1px;
+        background: var(--linea);
+        border: 1px solid var(--linea);
+        margin-top: 2rem;
+      }
+      @media (min-width: 48rem) {
+        .tiles {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      .tile {
+        background: var(--papel);
+        padding: 1.25rem 1.4rem 1.4rem;
+      }
+      .tile .etiqueta {
+        margin-bottom: 0.75rem;
+      }
+      .tile__valor {
+        font-size: 2.3rem;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .tile__valor small {
+        font-size: 1.05rem;
+        color: var(--gris-2);
+        font-weight: 400;
+        margin-left: 0.15rem;
+      }
+      .tile__detalle {
+        margin-top: 0.6rem;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--gris-2);
+        font-variant-numeric: tabular-nums;
+      }
+      .tile[data-alerta='si'] {
+        box-shadow: inset 3px 0 0 var(--rojo);
+      }
+      .tile[data-alerta='si'] .tile__valor {
+        color: var(--rojo);
+      }
+
+      .grafico-caja {
+        border: 1px solid var(--linea);
+        border-top: 0;
+        padding: 1.4rem;
+        background: var(--papel);
+      }
+      .grafico-caja .fila {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .grafico-caja .leyenda {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--gris-2);
+      }
+      .leyenda .limite {
+        color: var(--rojo);
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 220px;
+      }
+
+      .registro {
+        margin-top: 2.5rem;
+      }
+      .registro h2 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .registro ol {
+        margin-top: 1rem;
+        border-top: 1px solid var(--linea);
+        max-height: 260px;
+        overflow-y: auto;
+      }
+      .registro li {
+        display: grid;
+        grid-template-columns: 5.4rem 5.2rem 1fr;
+        gap: 1rem;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--linea-2);
+        font-size: 0.9rem;
+        color: var(--gris);
+      }
+      .registro .hora {
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        color: var(--gris-2);
+        font-variant-numeric: tabular-nums;
+        padding-top: 0.1rem;
+      }
+      .registro .tipo {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding-top: 0.15rem;
+      }
+      .registro li[data-nivel='alerta'] .tipo {
+        color: var(--rojo);
+      }
+      .registro li[data-nivel='ok'] .tipo {
+        color: var(--azul);
+      }
+
+      .pie-demo {
+        margin-top: 3rem;
+        border-top: 1px solid var(--linea);
+        padding-top: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+      }
+      .pie-demo p {
+        color: var(--gris);
+        font-size: 0.92rem;
+        max-width: 52ch;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="franja-bandera"></div>
+    <p class="aviso-demo">Demostración · todos los datos son simulados</p>
+
+    <header class="barra">
+      <nav class="contenedor barra__nav" aria-label="Principal">
+        <a class="marca" href="../index.html">
+          <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle cx="80.00" cy="20.00" r="8"/><circle cx="137.06" cy="61.46" r="8"/><circle cx="115.27" cy="128.54" r="8"/><circle cx="44.73" cy="128.54" r="8"/><circle cx="22.94" cy="61.46" r="8"/></g></svg>
+          <span class="marca__nombre">automatas</span>
+          <span class="marca__lugar">Demo · Prototipo 1</span>
+        </a>
+        <a class="boton boton--chico" href="../index.html#diagnostico"
+          >Quiero algo así</a
+        >
+      </nav>
+    </header>
+
+    <main class="panel">
+      <div class="contenedor">
+        <div class="panel__cabecera">
+          <div>
+            <p class="antetitulo">Cámara de frío 1 · Depósito Paysandú</p>
+            <h1>Panel de monitoreo</h1>
+          </div>
+          <span class="reloj" id="reloj" aria-hidden="true">—</span>
+        </div>
+
+        <span class="estado-general" id="estado" data-alerta="no" role="status">
+          <span class="punto" aria-hidden="true"></span>
+          <span id="estado-texto">Todo en rango</span>
+        </span>
+
+        <div class="tiles">
+          <div class="tile" id="tile-temp">
+            <span class="etiqueta">Temperatura</span>
+            <p class="tile__valor"><span id="v-temp">—</span><small>°C</small></p>
+            <p class="tile__detalle">límite 6,0 °C · sensor T-01</p>
+          </div>
+          <div class="tile" id="tile-hum">
+            <span class="etiqueta">Humedad</span>
+            <p class="tile__valor"><span id="v-hum">—</span><small>%</small></p>
+            <p class="tile__detalle">rango 80–95 % · sensor H-01</p>
+          </div>
+          <div class="tile" id="tile-puerta">
+            <span class="etiqueta">Puerta</span>
+            <p class="tile__valor" id="v-puerta">—</p>
+            <p class="tile__detalle">aperturas hoy: <span id="v-aperturas">0</span></p>
+          </div>
+          <div class="tile">
+            <span class="etiqueta">Energía</span>
+            <p class="tile__valor"><span id="v-kw">—</span><small>kW</small></p>
+            <p class="tile__detalle">compresor · promedio del día</p>
+          </div>
+        </div>
+
+        <div class="grafico-caja">
+          <div class="fila">
+            <span class="etiqueta" style="margin: 0">Temperatura · última hora</span>
+            <span class="leyenda"
+              >— medición &nbsp;·&nbsp; <span class="limite">— — límite 6,0 °C</span></span
+            >
+          </div>
+          <canvas id="grafico" role="img" aria-label="Evolución de la temperatura de la última hora, con el límite de alerta marcado en 6 grados"></canvas>
+        </div>
+
+        <section class="registro">
+          <h2>Registro de eventos</h2>
+          <ol id="eventos" aria-live="polite"></ol>
+        </section>
+
+        <div class="pie-demo">
+          <p>
+            Así se ve el prototipo operativo: sensores que registran, un panel
+            con historial y avisos que llegan antes del problema. En un proyecto
+            real, la alerta además sale por WhatsApp o correo al responsable.
+          </p>
+          <a class="boton" href="../index.html#diagnostico"
+            >Contanos tu proceso</a
+          >
+        </div>
+      </div>
+    </main>
+
+    <script>
+      /*
+        Simulación. La temperatura oscila cerca de 4 °C; cada tanto "alguien
+        abre la puerta" y la temperatura sube hasta cruzar el límite: ahí se
+        dispara la alerta, queda en el registro y el sistema "recupera" solo.
+        Determinista en su estructura, con ruido para que respire.
+      */
+      (function () {
+        const LIMITE = 6.0;
+        const PUNTOS = 120; // "última hora": un punto cada 30 s simulados
+
+        const $ = (id) => document.getElementById(id);
+        const fmt = (n, d = 1) => n.toFixed(d).replace('.', ',');
+
+        let t = 0;
+        let puerta = 0; // >0 mientras la puerta está abierta
+        let aperturas = 0;
+        let enAlerta = false;
+        const serie = [];
+
+        function temperatura() {
+          const base = 4.1 + 0.5 * Math.sin(t / 19) + (Math.random() - 0.5) * 0.25;
+          return base + (puerta > 0 ? Math.min(2.8, (8 - puerta) * 0.55) : 0);
+        }
+
+        function paso() {
+          t += 1;
+
+          // cada ~45 ticks, una apertura de puerta de 8 ticks
+          if (puerta === 0 && t > 12 && t % 45 === 0) {
+            puerta = 8;
+            aperturas += 1;
+            evento('puerta', 'Apertura de puerta registrada.');
+          }
+          if (puerta > 0) puerta -= 1;
+
+          const temp = temperatura();
+          serie.push(temp);
+          if (serie.length > PUNTOS) serie.shift();
+
+          const hum = 87 + 3.5 * Math.sin(t / 31) + (Math.random() - 0.5) * 1.2;
+          const kw = 11.4 + (puerta > 0 ? 2.1 : 0) + (Math.random() - 0.5) * 0.4;
+
+          $('v-temp').textContent = fmt(temp);
+          $('v-hum').textContent = fmt(hum, 0);
+          $('v-kw').textContent = fmt(kw);
+          $('v-puerta').textContent = puerta > 0 ? 'Abierta' : 'Cerrada';
+          $('v-aperturas').textContent = aperturas;
+          $('tile-puerta').dataset.alerta = puerta > 0 ? 'si' : 'no';
+
+          const cruzada = temp > LIMITE;
+          $('tile-temp').dataset.alerta = cruzada ? 'si' : 'no';
+          if (cruzada && !enAlerta) {
+            enAlerta = true;
+            estado('si', 'Alerta: temperatura sobre el límite');
+            evento(
+              'alerta',
+              'Temperatura ' + fmt(temp) + ' °C, sobre el límite de 6,0 °C. Aviso enviado al responsable.'
+            );
+          }
+          if (!cruzada && enAlerta) {
+            enAlerta = false;
+            estado('no', 'Todo en rango');
+            evento('ok', 'Temperatura de nuevo en rango (' + fmt(temp) + ' °C).');
+          }
+
+          dibujar();
+          reloj();
+        }
+
+        function estado(alerta, texto) {
+          $('estado').dataset.alerta = alerta;
+          $('estado-texto').textContent = texto;
+        }
+
+        function evento(tipo, texto) {
+          const li = document.createElement('li');
+          li.dataset.nivel = tipo === 'alerta' ? 'alerta' : tipo === 'ok' ? 'ok' : 'info';
+          const etiquetas = { alerta: 'alerta', ok: 'normal', puerta: 'puerta' };
+          li.innerHTML =
+            '<span class="hora">' + horaSimulada() + '</span>' +
+            '<span class="tipo">' + etiquetas[tipo] + '</span>' +
+            '<span>' + texto + '</span>';
+          const lista = $('eventos');
+          lista.insertBefore(li, lista.firstChild);
+          while (lista.children.length > 30) lista.removeChild(lista.lastChild);
+        }
+
+        function horaSimulada() {
+          const d = new Date();
+          return d.toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        function reloj() {
+          $('reloj').textContent = new Date().toLocaleTimeString('es-UY');
+        }
+
+        /* gráfico: línea sobre canvas, con el límite punteado */
+        const lienzo = $('grafico');
+        const ctx = lienzo.getContext('2d');
+
+        function dibujar() {
+          const estilo = getComputedStyle(document.documentElement);
+          const azul = estilo.getPropertyValue('--azul').trim();
+          const rojo = estilo.getPropertyValue('--rojo').trim();
+          const linea = estilo.getPropertyValue('--linea').trim();
+          const gris = estilo.getPropertyValue('--gris-2').trim();
+
+          const r = window.devicePixelRatio || 1;
+          const w = lienzo.clientWidth, h = lienzo.clientHeight;
+          if (lienzo.width !== w * r) { lienzo.width = w * r; lienzo.height = h * r; }
+          ctx.setTransform(r, 0, 0, r, 0, 0);
+          ctx.clearRect(0, 0, w, h);
+
+          const MIN = 2.5, MAX = 8.5;
+          const y = (v) => h - ((v - MIN) / (MAX - MIN)) * (h - 24) - 12;
+          const x = (i) => (i / (PUNTOS - 1)) * w;
+
+          // rejilla mínima
+          ctx.strokeStyle = linea;
+          ctx.lineWidth = 1;
+          [3, 5, 7].forEach((v) => {
+            ctx.beginPath(); ctx.moveTo(0, y(v)); ctx.lineTo(w, y(v)); ctx.stroke();
+            ctx.fillStyle = gris;
+            ctx.font = '10px "Geist Mono", monospace';
+            ctx.fillText(v + '°', 4, y(v) - 4);
+          });
+
+          // límite
+          ctx.strokeStyle = rojo;
+          ctx.setLineDash([5, 5]);
+          ctx.beginPath(); ctx.moveTo(0, y(LIMITE)); ctx.lineTo(w, y(LIMITE)); ctx.stroke();
+          ctx.setLineDash([]);
+
+          // serie
+          ctx.strokeStyle = azul;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          serie.forEach((v, i) => {
+            const px = x(i + (PUNTOS - serie.length)), py = y(v);
+            i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+          });
+          ctx.stroke();
+
+          // punto final
+          if (serie.length) {
+            const px = x(PUNTOS - 1), py = y(serie[serie.length - 1]);
+            ctx.fillStyle = serie[serie.length - 1] > LIMITE ? rojo : azul;
+            ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+
+        // precarga: una hora de historia antes del primer render
+        for (let i = 0; i < PUNTOS; i++) {
+          t += 1;
+          if (puerta > 0) puerta -= 1;
+          serie.push(temperatura());
+        }
+        evento('ok', 'Panel iniciado. Sensores T-01 y H-01 en línea.');
+        paso();
+        setInterval(paso, 1500);
+        window.addEventListener('resize', dibujar);
+      })();
+    </script>
+  </body>
+</html>

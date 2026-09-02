@@ -1,16 +1,4 @@
 /*
-  El formulario de diagnóstico es el prototipo 1 funcionando en vivo:
-  recibe, clasifica con IA, notifica y registra.
-
-  Con ENDPOINT configurado, manda un JSON por POST al webhook de n8n.
-  Sin ENDPOINT, arma el mensaje completo y abre WhatsApp con todo escrito,
-  así el sitio sirve desde el día uno sin ninguna infraestructura detrás.
-*/
-
-// PENDIENTE: pegar acá la URL del webhook de n8n cuando esté pronto.
-const ENDPOINT = '';
-
-/*
   Transiciones de entrada por sección.
 
   Las clases se agregan desde acá y no desde el HTML: así, si el JavaScript
@@ -32,17 +20,12 @@ const ENDPOINT = '';
     '.portada__micro',
     '.territorio__grilla > *',
     '.sintomas li',
-    '.columna',
-    '.secundaria',
     '.etapa',
     '.demo',
-    '.rubros',
-    '.foto',
     '.apunte',
     '.pregunta',
     '.datos',
-    '.campos',
-    '.envio',
+    '.dialogo__calendario',
   ].join(', ');
 
   const PASO = 70; // ms entre hermanos
@@ -78,92 +61,61 @@ const ENDPOINT = '';
   observar(filetes, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
 })();
 
+/*
+  Ventana flotante de «Agendar entrevista»: el calendario de Cal.com vive en
+  un <dialog> nativo, que se abre con showModal() (foco atrapado, Escape
+  cierra solo) y con un clic fuera de la tarjeta.
+
+  Los botones que la abren son <button>, no enlaces con ancla: no hay forma
+  de abrir un <dialog> sin JavaScript, así que un href de respaldo hubiera
+  sido un scroll a una caja invisible, no una alternativa real. El resto
+  del sitio ya depende del script para lo mismo (las animaciones), así que
+  no es una dependencia nueva.
+
+  demo/panel.html enlaza con href="../index.html#diagnostico": como esa
+  página no carga este script, la apertura ocurre acá, al llegar con ese
+  hash en la URL.
+*/
 (function () {
-  const form = document.getElementById('form-diagnostico');
-  if (!form) return;
+  const dialogo = document.getElementById('diagnostico');
+  if (!dialogo || typeof dialogo.showModal !== 'function') return;
 
-  const estado = form.querySelector('.estado');
-  const boton = form.querySelector('button[type="submit"]');
-  const whatsapp = document.body.dataset.whatsapp;
-
-  function mostrar(texto, tono) {
-    estado.textContent = texto;
-    estado.dataset.tono = tono;
+  function abrir() {
+    if (dialogo.open) return;
+    dialogo.showModal();
+    document.body.style.overflow = 'hidden';
   }
 
-  function armarMensaje(datos) {
-    return [
-      'Hola, quiero solicitar un diagnóstico.',
-      '',
-      'Organización: ' + datos.organizacion,
-      'Persona: ' + datos.persona,
-      'Rubro: ' + datos.rubro,
-      'Localidad: ' + datos.localidad,
-      'Proceso a mejorar: ' + datos.proceso,
-      datos.como ? 'Cómo se hace hoy: ' + datos.como : '',
-      datos.frecuencia ? 'Frecuencia: ' + datos.frecuencia : '',
-      'Contacto: ' + datos.contacto,
-    ]
-      .filter(Boolean)
-      .join('\n');
+  function restaurarScroll() {
+    document.body.style.overflow = '';
   }
 
-  form.addEventListener('submit', async function (evento) {
-    evento.preventDefault();
+  function cerrar() {
+    if (!dialogo.open) return;
+    dialogo.close();
+    // No depende únicamente del evento 'close' del <dialog>: por Escape
+    // ese evento sí llega, pero acá lo garantizamos igual sin esperarlo.
+    restaurarScroll();
+  }
 
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      mostrar('Faltan campos obligatorios.', 'error');
-      return;
-    }
+  document
+    .querySelectorAll('[data-abrir-diagnostico]')
+    .forEach((el) => el.addEventListener('click', abrir));
 
-    const fd = new FormData(form);
-    if (fd.get('apellido2')) return; // robot
+  dialogo
+    .querySelectorAll('[data-cerrar-dialogo]')
+    .forEach((el) => el.addEventListener('click', cerrar));
 
-    const datos = {
-      organizacion: fd.get('organizacion'),
-      persona: fd.get('persona'),
-      rubro: fd.get('rubro'),
-      localidad: fd.get('localidad'),
-      proceso: fd.get('proceso'),
-      como: fd.getAll('como').join(', '),
-      frecuencia: fd.get('frecuencia'),
-      contacto: fd.get('contacto'),
-      origen: 'landing',
-      enviadoEn: new Date().toISOString(),
-    };
-
-    if (!ENDPOINT) {
-      const url =
-        'https://wa.me/' +
-        whatsapp +
-        '?text=' +
-        encodeURIComponent(armarMensaje(datos));
-      window.open(url, '_blank', 'noopener');
-      mostrar('Te abrimos WhatsApp con el mensaje listo para enviar.', 'ok');
-      return;
-    }
-
-    boton.disabled = true;
-    mostrar('Enviando…', 'neutro');
-
-    try {
-      const respuesta = await fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos),
-      });
-      if (!respuesta.ok) throw new Error(String(respuesta.status));
-
-      form.reset();
-      mostrar('Recibido. Te respondemos el mismo día hábil.', 'ok');
-    } catch (error) {
-      mostrar(
-        'No pudimos enviarlo. Probá de nuevo o escribinos por WhatsApp.',
-        'error'
-      );
-    } finally {
-      boton.disabled = false;
-    }
+  // Clic en el fondo (fuera de la tarjeta) cierra, igual que el backdrop.
+  dialogo.addEventListener('click', (evento) => {
+    if (evento.target === dialogo) cerrar();
   });
+
+  // Red de seguridad para el cierre con Escape, que no pasa por cerrar().
+  dialogo.addEventListener('close', restaurarScroll);
+
+  if (location.hash === '#diagnostico') {
+    abrir();
+    history.replaceState(null, '', location.pathname + location.search);
+  }
 })();

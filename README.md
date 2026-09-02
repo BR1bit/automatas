@@ -20,10 +20,14 @@ esta carpeta tal cual.
 | --- | --- |
 | `index.html` | Toda la página: las once bandas del plan. |
 | `estilos.css` | Identidad y maquetación. Los colores están arriba de todo. |
-| `app.js` | El formulario de diagnóstico. |
+| `app.js` | La ventana de «Agendar entrevista» y las transiciones de entrada por sección. |
 | `flor.svg`, `flor-marca.svg` | La marca del mburucuyá, en versión grande y chica. |
+| `puente.svg` | El puente Paysandú–Colón, de fondo entre la portada y la franja de territorio. |
 | `favicon.svg` | Ícono de pestaña. |
 | `fuentes/` | Schibsted Grotesk y Geist Mono autohospedadas (139 KB). El sitio no le pide nada a Google. |
+| `demo/panel.html` | El prototipo 1 funcionando: panel de monitoreo con datos simulados. |
+| `demo/aprobaciones.html` | El prototipo 2 funcionando: bandeja de aprobaciones administrativas. |
+| `marca/` | Variantes de logo descartadas, conservadas por si sirven más adelante. |
 | `robots.txt` | Permite indexar todo. |
 
 ## Ver el sitio
@@ -108,21 +112,88 @@ marcados con `PENDIENTE` y hay que reemplazarlos:
    enlace del pie). Buscar y reemplazar las tres.
 2. **Teléfono fijo, correo y zona** — en `index.html`: bloque `<script
    type="application/ld+json">`, sección diagnóstico y pie.
-3. **Foto propia de Paysandú** — `index.html`, sección «Estamos acá». Nunca
-   banco de imágenes: es la señal más rápida de proveedor genérico.
-4. **Capturas de las dos demostraciones** — `index.html`, sección
-   «Demostraciones».
 
-## Formulario de diagnóstico
+El link de Cal.com ya está cargado (`bruno-rodriguez-wtalvm/30min`). Antes de
+publicar, conviene entrar a la cuenta de Cal.com y confirmar que la
+disponibilidad semanal y la duración del evento («30min») son las que se
+quieren mostrar públicamente.
 
-El formulario **es** el prototipo 1: recibe, clasifica con IA, notifica y
-registra.
+## Agendar entrevista
 
-- Con `ENDPOINT` cargado en `app.js`, manda un JSON por POST al webhook de n8n.
-- Sin `ENDPOINT`, arma el mensaje completo y abre WhatsApp con todo escrito. El
-  sitio funciona desde el día uno sin infraestructura detrás.
+Los botones «Agendar entrevista» (barra y hero) abren un `<dialog>` nativo
+que va **directo al calendario** — no hay un formulario de preguntas antes.
+Es intencional: la primera versión pedía rubro, proceso a mejorar, etc. antes
+de mostrar el calendario, y eso disparaba WhatsApp automáticamente en cada
+envío (para que a Bruno le llegara el detalle, ya que no había webhook). Sacaba
+a la visita del sitio con una pestaña nueva que no esperaba, así que se
+simplificó: agendar es agendar, un solo paso.
 
-WhatsApp arranca con enlace `wa.me` sobre un número de WhatsApp Business común.
+Adentro, un calendario de [Cal.com](https://cal.com) embebido (widget oficial
+"inline", plan gratuito — conexiones de calendario ilimitadas, incluso con dos
+cuentas de Google Calendar a la vez) apunta al evento real de Bruno
+(`bruno-rodriguez-wtalvm/30min`). Cal.com manda correo al instante cuando
+alguien reserva.
+
+**Si más adelante se quiere volver a capturar contexto antes de la llamada**
+(qué proceso quiere mejorar, de qué rubro es, etc.), la forma correcta es
+agregar esas preguntas como **campos personalizados del propio tipo de evento
+en Cal.com** (se configuran en cal.com → Event Types → el evento → Advanced →
+Booking questions), no un formulario aparte: así siguen llegando en la misma
+notificación de la reserva, sin gatillar nada del lado del navegador ni sacar
+a nadie del flujo. Debajo del calendario quedan WhatsApp y correo como
+alternativa para quien prefiera escribir antes de agendar.
+
+## Prototipo 1: panel de monitoreo (`demo/panel.html`)
+
+La primera tarjeta de «Demostraciones» no es una captura de pantalla: enlaza
+a un panel que **corre de verdad**, con datos simulados de una cámara de frío.
+
+- Temperatura, humedad, estado de la puerta y consumo, actualizados cada
+  1,5 s. La temperatura ronda los 4 °C con ruido; cada tanto la puerta se
+  «abre» y el valor sube.
+- Un gráfico en `<canvas>` con la última hora y el límite de alerta marcado.
+- Cuando la temperatura cruza el límite (6 °C), la tarjeta y el punto de
+  estado pasan a rojo, queda un evento en el registro y —cuando vuelve a
+  rango— otro evento avisa la recuperación. El ciclo completo (apertura →
+  alerta → recuperación) tarda cerca de un minuto: si lo mirás y no pasa nada
+  todavía, esperá un poco.
+- Es exactamente lo que describe la tarjeta: «sensores registran, un panel
+  los muestra en vivo con su historial y el sistema avisa cuando se supera un
+  límite». No hay nada que demostrar aparte, salvo cambiar los datos por los
+  reales de un cliente.
+
+Es una página independiente (`demo/panel.html`), con `<meta name="robots"
+content="noindex">` para que no compita en buscadores con la portada, y una
+franja violeta arriba que aclara que los datos son simulados. Reutiliza
+`estilos.css` para los tokens y agrega los suyos propios al final del
+`<head>`. Sin dependencias: el gráfico se dibuja a mano en `<canvas>`.
+
+## Prototipo 2: bandeja de aprobaciones (`demo/aprobaciones.html`)
+
+La segunda tarjeta, orientada al trabajo administrativo de oficina: compras,
+reintegros de gastos y licencias que hoy se aprueban por cadena de mails.
+
+- Solicitudes simuladas que van entrando solas, rotando entre los tres tipos,
+  con solicitante, monto o detalle y una **prioridad calculada
+  automáticamente** (montos altos, poca anticipación en licencias, o la
+  palabra «urgente» en el detalle, marcan la solicitud como urgente).
+- Botones **Aprobar** / **Rechazar** reales: al decidir, la solicitud sale de
+  la bandeja y queda un renglón en el historial con hora, quién decidió y el
+  resultado. Los números de arriba (pendientes, aprobadas, rechazadas, tiempo
+  promedio, **monto aprobado y monto rechazado**) se actualizan en el
+  momento. Los montos solo suman compras y reintegros de gastos — las
+  licencias no tienen importe, así que no entran en esa cuenta.
+- Misma estructura que `demo/panel.html` (`noindex`, franja de aviso,
+  `estilos.css` reutilizado, sin dependencias) — es su par administrativo, no
+  industrial.
+
+La grilla de «Demostraciones» se acomoda sola según cuántas tarjetas haya
+(`grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr))` en
+`estilos.css`): no hace falta una clase `--dos` / `--tres` separada si en
+algún momento se agrega o se saca una demo.
+
+Los enlaces de WhatsApp que quedan (info de contacto del modal y pie de
+página) arrancan con `wa.me` sobre un número de WhatsApp Business común.
 La Cloud API de Meta (número dedicado, verificación de empresa, plantillas
 aprobadas) es un proyecto aparte y no bloquea el lanzamiento.
 

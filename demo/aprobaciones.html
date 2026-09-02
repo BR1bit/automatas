@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="es-UY">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bandeja de aprobaciones · demo · automatas</title>
+    <meta
+      name="description"
+      content="Demostración del prototipo administrativo: bandeja de aprobaciones de compras, gastos y licencias, con prioridad automática y datos simulados."
+    />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../estilos.css" />
+
+    <style>
+      /*
+        Estilos propios de esta demo. Los tokens y las tipografías vienen de
+        ../estilos.css; acá solo está lo que no existe en la landing.
+        Todo el dato que se muestra es simulado: lo genera el script de abajo.
+      */
+      .aviso-demo {
+        background: var(--lila);
+        color: #fff;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 0.45rem 1rem;
+      }
+
+      .panel {
+        padding: 2.5rem 0 5rem;
+      }
+
+      .panel__cabecera {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .panel__cabecera h1 {
+        font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+        font-weight: 500;
+      }
+      .reloj {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--gris-2);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* estado general: una sola pastilla, arriba de todo */
+      .estado-general {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin-top: 1.25rem;
+        border: 1px solid var(--linea);
+        border-radius: 999px;
+        padding: 0.4rem 1rem;
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--gris);
+      }
+      .estado-general .punto {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--azul);
+      }
+      .estado-general[data-alerta='si'] {
+        border-color: var(--rojo);
+        color: var(--rojo);
+      }
+      .estado-general[data-alerta='si'] .punto {
+        background: var(--rojo);
+        animation: latido 1.1s ease-in-out infinite;
+      }
+      @keyframes latido {
+        50% {
+          opacity: 0.35;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .estado-general[data-alerta='si'] .punto {
+          animation: none;
+        }
+      }
+
+      .tiles {
+        display: grid;
+        gap: 1px;
+        background: var(--linea);
+        border: 1px solid var(--linea);
+        margin-top: 2rem;
+      }
+      @media (min-width: 48rem) {
+        .tiles {
+          /* 18rem por tile fuerza tres por fila: dos filas de tres con los
+             seis tiles actuales, con lugar de sobra para la etiqueta más
+             larga ("Tiempo promedio de aprobación"). */
+          grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+        }
+      }
+      .tile {
+        background: var(--papel);
+        padding: 1.25rem 1.4rem 1.4rem;
+      }
+      .tile .etiqueta {
+        margin-bottom: 0.75rem;
+      }
+      .tile__valor {
+        font-size: 2.3rem;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .tile__valor small {
+        font-size: 1.05rem;
+        color: var(--gris-2);
+        font-weight: 400;
+        margin-left: 0.15rem;
+      }
+      .tile__detalle {
+        margin-top: 0.6rem;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--gris-2);
+        font-variant-numeric: tabular-nums;
+      }
+      .tile[data-alerta='si'] {
+        box-shadow: inset 3px 0 0 var(--rojo);
+      }
+      .tile[data-alerta='si'] .tile__valor {
+        color: var(--rojo);
+      }
+
+      /* bandeja de solicitudes entrantes */
+      .bandeja {
+        margin-top: 2.5rem;
+      }
+      .bandeja h2 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .bandeja__lista {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        background: var(--linea);
+        border: 1px solid var(--linea);
+        max-height: 30rem;
+        overflow-y: auto;
+      }
+      .bandeja__vacio {
+        background: var(--papel);
+        padding: 1.75rem 1.4rem;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        color: var(--gris-2);
+      }
+
+      .solicitud {
+        background: var(--papel);
+        padding: 1.1rem 1.4rem;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 0.75rem 1.5rem;
+        animation: aparecer 0.35s ease;
+      }
+      @keyframes aparecer {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .solicitud {
+          animation: none;
+        }
+      }
+      .solicitud__info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        min-width: 0;
+      }
+      .solicitud__linea {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .solicitud__tipo {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gris-2);
+      }
+      .solicitud__titulo {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--tinta);
+      }
+      .solicitud__detalle {
+        font-size: 0.88rem;
+        color: var(--gris);
+      }
+      .pastilla {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.22rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid var(--linea);
+        color: var(--gris-2);
+        width: fit-content;
+      }
+      .pastilla::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--gris-2);
+      }
+      .pastilla[data-prioridad='urgente'] {
+        border-color: var(--rojo);
+        color: var(--rojo);
+      }
+      .pastilla[data-prioridad='urgente']::before {
+        background: var(--rojo);
+      }
+
+      .solicitud__acciones {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .solicitud__acciones button {
+        font-family: var(--sans);
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        padding: 0.55rem 1.05rem;
+        border-radius: 3px;
+        cursor: pointer;
+        border: 1px solid var(--linea);
+        background: transparent;
+        color: var(--tinta);
+        transition: background-color 0.15s ease, border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .btn-aprobar {
+        border-color: var(--azul);
+        color: var(--azul);
+      }
+      .btn-aprobar:hover {
+        background: var(--azul);
+        color: #fff;
+      }
+      .btn-rechazar {
+        border-color: var(--rojo);
+        color: var(--rojo);
+      }
+      .btn-rechazar:hover {
+        background: var(--rojo);
+        color: #fff;
+      }
+      @media (max-width: 34rem) {
+        .solicitud {
+          grid-template-columns: 1fr;
+        }
+        .solicitud__acciones {
+          justify-content: flex-start;
+        }
+      }
+
+      .registro {
+        margin-top: 2.5rem;
+      }
+      .registro h2 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .registro ol {
+        margin-top: 1rem;
+        border-top: 1px solid var(--linea);
+        max-height: 260px;
+        overflow-y: auto;
+      }
+      .registro li {
+        display: grid;
+        grid-template-columns: 5.4rem 6.4rem 1fr;
+        gap: 1rem;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--linea-2);
+        font-size: 0.9rem;
+        color: var(--gris);
+      }
+      .registro .hora {
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        color: var(--gris-2);
+        font-variant-numeric: tabular-nums;
+        padding-top: 0.1rem;
+      }
+      .registro .tipo {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding-top: 0.15rem;
+      }
+      .registro li[data-nivel='aprobada'] .tipo {
+        color: var(--azul);
+      }
+      .registro li[data-nivel='rechazada'] .tipo {
+        color: var(--rojo);
+      }
+
+      .pie-demo {
+        margin-top: 3rem;
+        border-top: 1px solid var(--linea);
+        padding-top: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+      }
+      .pie-demo p {
+        color: var(--gris);
+        font-size: 0.92rem;
+        max-width: 52ch;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="franja-bandera"></div>
+    <p class="aviso-demo">Demostración · todos los datos son simulados</p>
+
+    <header class="barra">
+      <nav class="contenedor barra__nav" aria-label="Principal">
+        <a class="marca" href="../index.html">
+          <svg class="flor flor--marca" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="9"><path d="M80.00 64.00 Q97.00 42.00 80.00 20.00 Q63.00 42.00 80.00 64.00Z"/><path d="M95.22 75.06 Q121.39 84.43 137.06 61.46 Q110.89 52.09 95.22 75.06Z"/><path d="M89.40 92.94 Q88.58 120.73 115.27 128.54 Q116.09 100.75 89.40 92.94Z"/><path d="M70.60 92.94 Q43.91 100.75 44.73 128.54 Q71.42 120.73 70.60 92.94Z"/><path d="M64.78 75.06 Q49.11 52.09 22.94 61.46 Q38.61 84.43 64.78 75.06Z"/><circle cx="80" cy="80" r="9"/></g><g fill="currentColor" stroke="none"><circle cx="80.00" cy="20.00" r="8"/><circle cx="137.06" cy="61.46" r="8"/><circle cx="115.27" cy="128.54" r="8"/><circle cx="44.73" cy="128.54" r="8"/><circle cx="22.94" cy="61.46" r="8"/></g></svg>
+          <span class="marca__nombre">automatas</span>
+          <span class="marca__lugar">Demo · Prototipo 2</span>
+        </a>
+        <a class="boton boton--chico" href="../index.html#diagnostico"
+          >Quiero algo así</a
+        >
+      </nav>
+    </header>
+
+    <main class="panel">
+      <div class="contenedor">
+        <div class="panel__cabecera">
+          <div>
+            <p class="antetitulo">Compras, gastos y licencias · Oficina central</p>
+            <h1>Bandeja de aprobaciones</h1>
+          </div>
+          <span class="reloj" id="reloj" aria-hidden="true">—</span>
+        </div>
+
+        <span class="estado-general" id="estado" data-alerta="no" role="status">
+          <span class="punto" aria-hidden="true"></span>
+          <span id="estado-texto">Todo al día</span>
+        </span>
+
+        <div class="tiles">
+          <div class="tile" id="tile-pendientes">
+            <span class="etiqueta">Pendientes</span>
+            <p class="tile__valor" id="v-pendientes">0</p>
+            <p class="tile__detalle">esperando una decisión</p>
+          </div>
+          <div class="tile">
+            <span class="etiqueta">Aprobadas hoy</span>
+            <p class="tile__valor" id="v-aprobadas">0</p>
+            <p class="tile__detalle">desde que abriste el panel</p>
+          </div>
+          <div class="tile">
+            <span class="etiqueta">Rechazadas hoy</span>
+            <p class="tile__valor" id="v-rechazadas">0</p>
+            <p class="tile__detalle">desde que abriste el panel</p>
+          </div>
+          <div class="tile">
+            <span class="etiqueta">Tiempo promedio de aprobación</span>
+            <p class="tile__valor"><span id="v-tiempo">—</span><small id="v-tiempo-unidad"></small></p>
+            <p class="tile__detalle">promedio de las últimas decisiones</p>
+          </div>
+          <div class="tile">
+            <span class="etiqueta">Monto aprobado</span>
+            <p class="tile__valor" id="v-monto-aprobado">$ 0</p>
+            <p class="tile__detalle">compras y gastos, desde que abriste el panel</p>
+          </div>
+          <div class="tile" data-alerta="no" id="tile-monto-rechazado">
+            <span class="etiqueta">Monto rechazado</span>
+            <p class="tile__valor" id="v-monto-rechazado">$ 0</p>
+            <p class="tile__detalle">compras y gastos, desde que abriste el panel</p>
+          </div>
+        </div>
+
+        <section class="bandeja">
+          <h2>Bandeja de entrada</h2>
+          <div class="bandeja__lista" id="bandeja" aria-live="polite">
+            <p class="bandeja__vacio" id="bandeja-vacio">Sin solicitudes por ahora. En cualquier momento entra una nueva.</p>
+          </div>
+        </section>
+
+        <section class="registro">
+          <h2>Historial de decisiones</h2>
+          <ol id="historial" aria-live="polite"></ol>
+        </section>
+
+        <div class="pie-demo">
+          <p>
+            Así se ve el prototipo administrativo: las solicitudes entran solas,
+            el sistema calcula la prioridad y cada decisión queda registrada con
+            hora y responsable. En un proyecto real, la persona que aprueba
+            recibe el pedido por WhatsApp o correo y decide desde el celular,
+            sin cadenas de mails ni planillas sueltas.
+          </p>
+          <a class="boton" href="../index.html#diagnostico"
+            >Contanos tu proceso</a
+          >
+        </div>
+      </div>
+    </main>
+
+    <script>
+      /*
+        Simulación. Cada tanto entra una solicitud nueva (orden de compra,
+        reintegro de gastos o licencia), rotando entre los tres tipos. Cada
+        una se clasifica sola como "normal" o "urgente" según el monto o
+        palabras clave del detalle. Al aprobar o rechazar (clic real), la
+        tarjeta pasa al historial, se registra quién decidió y cuándo, y los
+        números de arriba se actualizan. El tiempo de espera que se promedia
+        es el tiempo real que la tarjeta estuvo en la bandeja, llevado a una
+        escala de horas para que se sienta como un día de oficina.
+      */
+      (function () {
+        const $ = (id) => document.getElementById(id);
+        const fmt = (n, d = 1) => n.toFixed(d).replace('.', ',');
+        const money = (n) =>
+          '$ ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+        const NOMBRES = [
+          'Lucía Bentancor', 'Martín Ferreira', 'Ana Cardozo', 'Rodrigo Silveira',
+          'Valentina Acosta', 'Diego Pereyra', 'María Sosa', 'Nicolás Rivas',
+          'Camila Duarte', 'Federico Olivera',
+        ];
+        const PROVEEDORES = [
+          'Insumos Tecnopack', 'Ferretería del Norte', 'Distribuidora Larrosa',
+          'Suministros Rivera', 'Papelera Uruguay', 'Repuestos Industriales SA',
+        ];
+        const CONCEPTOS_GASTO = [
+          'Combustible viaje a Salto', 'Alojamiento congreso Montevideo',
+          'Almuerzo con proveedor', 'Peaje y estacionamiento',
+          'Compra de insumos de oficina', 'Reparación urgente de vehículo',
+        ];
+        const MOTIVOS_LICENCIA = [
+          'Licencia anual', 'Día de estudio', 'Trámite personal',
+          'Licencia médica urgente', 'Asuntos de familia',
+        ];
+
+        function elegir(lista) {
+          return lista[Math.floor(Math.random() * lista.length)];
+        }
+
+        let idSiguiente = 1;
+
+        function generarCompra() {
+          const monto = Math.round(3000 + Math.random() * 62000);
+          return {
+            tipo: 'Orden de compra',
+            solicitante: elegir(NOMBRES),
+            monto,
+            detalle: money(monto) + ' · ' + elegir(PROVEEDORES),
+          };
+        }
+        function generarGasto() {
+          const concepto = elegir(CONCEPTOS_GASTO);
+          const monto = Math.round(400 + Math.random() * 8600);
+          return {
+            tipo: 'Reintegro de gastos',
+            solicitante: elegir(NOMBRES),
+            monto,
+            detalle: money(monto) + ' · ' + concepto,
+          };
+        }
+        function generarLicencia() {
+          const dias = 1 + Math.floor(Math.random() * 5);
+          const anticipacion = Math.floor(Math.random() * 9); // días hasta que empieza
+          const motivo = elegir(MOTIVOS_LICENCIA);
+          return {
+            tipo: 'Licencia / día libre',
+            solicitante: elegir(NOMBRES),
+            anticipacion,
+            detalle:
+              dias + (dias === 1 ? ' día' : ' días') + ' · ' + motivo +
+              ' · a partir de ' + (anticipacion === 0 ? 'hoy' : 'en ' + anticipacion + (anticipacion === 1 ? ' día' : ' días')),
+          };
+        }
+        const GENERADORES = [generarCompra, generarGasto, generarLicencia];
+
+        // Clasificación automática de prioridad. Una solicitud es "urgente"
+        // si el detalle trae una palabra clave que lo delata, o si supera un
+        // umbral propio de su tipo (monto alto en compras y gastos, poca
+        // anticipación en licencias).
+        function clasificar(sol) {
+          if (/urgente/i.test(sol.detalle)) return 'urgente';
+          if (sol.tipo === 'Orden de compra' && sol.monto >= 45000) return 'urgente';
+          if (sol.tipo === 'Reintegro de gastos' && sol.monto >= 6000) return 'urgente';
+          if (sol.tipo === 'Licencia / día libre' && sol.anticipacion <= 1) return 'urgente';
+          return 'normal';
+        }
+
+        const pendientes = new Map(); // id -> { ...sol, creadaEn }
+        let aprobadas = 0;
+        let rechazadas = 0;
+        // Solo compras y gastos tienen monto; las licencias no suman acá.
+        let montoAprobado = 0;
+        let montoRechazado = 0;
+        const tiemposHoras = [];
+
+        function crearSolicitud() {
+          const base = elegir(GENERADORES)();
+          const sol = Object.assign(base, {
+            id: idSiguiente++,
+            prioridad: clasificar(base),
+            creadaEn: Date.now(),
+          });
+          pendientes.set(sol.id, sol);
+          pintarTarjeta(sol);
+          actualizarTiles();
+          actualizarEstado();
+        }
+
+        function pintarTarjeta(sol) {
+          $('bandeja-vacio').style.display = 'none';
+          const art = document.createElement('article');
+          art.className = 'solicitud';
+          art.id = 'sol-' + sol.id;
+          art.innerHTML =
+            '<div class="solicitud__info">' +
+              '<div class="solicitud__linea">' +
+                '<span class="solicitud__tipo">' + sol.tipo + '</span>' +
+                '<span class="pastilla" data-prioridad="' + sol.prioridad + '">' + sol.prioridad + '</span>' +
+              '</div>' +
+              '<span class="solicitud__titulo">' + sol.solicitante + '</span>' +
+              '<span class="solicitud__detalle">' + sol.detalle + '</span>' +
+            '</div>' +
+            '<div class="solicitud__acciones">' +
+              '<button type="button" class="btn-aprobar" data-accion="aprobar">Aprobar</button>' +
+              '<button type="button" class="btn-rechazar" data-accion="rechazar">Rechazar</button>' +
+            '</div>';
+          art.querySelector('[data-accion="aprobar"]').addEventListener('click', () => decidir(sol.id, 'aprobada'));
+          art.querySelector('[data-accion="rechazar"]').addEventListener('click', () => decidir(sol.id, 'rechazada'));
+          $('bandeja').insertBefore(art, $('bandeja').firstChild);
+        }
+
+        function decidir(id, resultado) {
+          const sol = pendientes.get(id);
+          if (!sol) return;
+          pendientes.delete(id);
+
+          const tarjeta = $('sol-' + id);
+          if (tarjeta) tarjeta.remove();
+          if (pendientes.size === 0) $('bandeja-vacio').style.display = '';
+
+          // el tiempo real de espera en la bandeja, llevado a una escala de
+          // horas de oficina (10 s reales ≈ 1 h simulada), con un piso para
+          // que nunca se vea instantáneo.
+          const esperaSeg = (Date.now() - sol.creadaEn) / 1000;
+          const horas = Math.max(0.3, Math.min(8, esperaSeg / 10));
+          if (resultado === 'aprobada') {
+            aprobadas += 1;
+            tiemposHoras.push(horas);
+            if (sol.monto) montoAprobado += sol.monto;
+          } else {
+            rechazadas += 1;
+            if (sol.monto) montoRechazado += sol.monto;
+          }
+
+          registrar(sol, resultado, horas);
+          actualizarTiles();
+          actualizarEstado();
+        }
+
+        function registrar(sol, resultado, horas) {
+          const li = document.createElement('li');
+          li.dataset.nivel = resultado;
+          const verbo = resultado === 'aprobada' ? 'aprobó' : 'rechazó';
+          const texto =
+            'Vos ' + verbo + ' la solicitud de ' + sol.solicitante +
+            ' (' + sol.tipo.toLowerCase() + ', ' + sol.detalle + ') tras ' + fmt(horas) + ' h de espera.';
+          li.innerHTML =
+            '<span class="hora">' + horaSimulada() + '</span>' +
+            '<span class="tipo">' + resultado + '</span>' +
+            '<span>' + texto + '</span>';
+          const lista = $('historial');
+          lista.insertBefore(li, lista.firstChild);
+          while (lista.children.length > 30) lista.removeChild(lista.lastChild);
+        }
+
+        function actualizarTiles() {
+          $('v-pendientes').textContent = pendientes.size;
+          $('v-aprobadas').textContent = aprobadas;
+          $('v-rechazadas').textContent = rechazadas;
+          if (tiemposHoras.length) {
+            const promedio = tiemposHoras.reduce((a, b) => a + b, 0) / tiemposHoras.length;
+            $('v-tiempo').textContent = fmt(promedio);
+            $('v-tiempo-unidad').textContent = ' h';
+          } else {
+            $('v-tiempo').textContent = '—';
+            $('v-tiempo-unidad').textContent = '';
+          }
+          $('tile-pendientes').dataset.alerta = pendientes.size >= 5 ? 'si' : 'no';
+
+          $('v-monto-aprobado').textContent = money(montoAprobado);
+          $('v-monto-rechazado').textContent = money(montoRechazado);
+          $('tile-monto-rechazado').dataset.alerta = montoRechazado >= 20000 ? 'si' : 'no';
+        }
+
+        function actualizarEstado() {
+          const urgentes = [...pendientes.values()].filter((s) => s.prioridad === 'urgente').length;
+          if (urgentes > 0) {
+            $('estado').dataset.alerta = 'si';
+            $('estado-texto').textContent =
+              urgentes === 1 ? '1 solicitud urgente esperando' : urgentes + ' solicitudes urgentes esperando';
+          } else {
+            $('estado').dataset.alerta = 'no';
+            $('estado-texto').textContent = 'Todo al día';
+          }
+        }
+
+        function horaSimulada() {
+          return new Date().toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        function reloj() {
+          $('reloj').textContent = new Date().toLocaleTimeString('es-UY');
+        }
+
+        let t = 0;
+        function paso() {
+          t += 1;
+          reloj();
+          // una solicitud nueva cada ~4,5 s, salvo que la bandeja ya esté
+          // bastante llena (para que no se acumule mientras nadie mira).
+          if (t % 3 === 0 && pendientes.size < 6) crearSolicitud();
+        }
+
+        crearSolicitud();
+        crearSolicitud();
+        reloj();
+        actualizarTiles();
+        actualizarEstado();
+        setInterval(paso, 1500);
+      })();
+    </script>
+  </body>
+</html>

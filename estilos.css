@@ -165,6 +165,68 @@ svg {
 }
 
 /*
+  Los cinco nodos de la flor —las puntas de cada pétalo— arrancan dispersos
+  y viajan hasta su lugar cuando la página carga: cada uno desde una
+  dirección distinta, cruzando el centro, como si la flor se ensamblara.
+  Corre una sola vez, en las tres flores del sitio (barra, portada, pie).
+
+  --dx/--dy es el punto de partida de cada nodo, medido desde su posición
+  final (mismas unidades que el viewBox, así que valen igual en la flor
+  chica y en la grande). transform-box: fill-box centra la escala en el
+  propio nodo, no en la esquina del dibujo.
+*/
+.flor .nodo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nodo-llega 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.flor .nodo-b {
+  animation-delay: 0s;
+}
+.flor .nodo-c,
+.flor .nodo-d {
+  animation-delay: 0.12s;
+}
+.flor .nodo-a,
+.flor .nodo-e {
+  animation-delay: 0.24s;
+}
+.flor .nodo-a {
+  --dx: -58;
+  --dy: 96;
+}
+.flor .nodo-b {
+  --dx: -6;
+  --dy: 100;
+}
+.flor .nodo-c {
+  --dx: -110;
+  --dy: -70;
+}
+.flor .nodo-d {
+  --dx: 110;
+  --dy: -70;
+}
+.flor .nodo-e {
+  --dx: 58;
+  --dy: 96;
+}
+
+@keyframes nodo-llega {
+  from {
+    opacity: 0;
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) scale(0.35);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/*
   Transiciones de entrada. Las clases las pone app.js al arrancar, no el HTML:
   si el JavaScript no corre, nada queda escondido y la página se lee igual.
   El desfase entre hermanos lo calcula el script en --retraso.
@@ -558,71 +620,22 @@ svg {
   }
 }
 
-/* ---------- soluciones ---------- */
+/* ---------- columnas (usada por demostraciones) ---------- */
 
+/*
+  Se acomoda sola según cuántas tarjetas haya: con dos, dos columnas anchas;
+  con tres, tres columnas más angostas. auto-fit colapsa las pistas vacías,
+  así que no hace falta una clase --dos / --tres distinta para cada caso.
+*/
 .columnas {
   display: grid;
   gap: 2.5rem;
   margin-top: 3.5rem;
 }
-.columna {
-  border-top: 1px solid var(--tinta);
-  padding-top: 1.5rem;
-}
-.columna h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-}
-.columna__resumen {
-  margin-top: 0.9rem;
-  color: var(--gris);
-  font-size: 0.98rem;
-}
-.columna__lista {
-  margin-top: 1.5rem;
-  display: grid;
-  gap: 0.55rem;
-}
-.columna__lista li {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: var(--gris-2);
-}
-
 @media (min-width: 56rem) {
-  .columnas--tres {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-  .columnas--dos {
-    grid-template-columns: repeat(2, 1fr);
+  .columnas {
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
     gap: 3rem;
-  }
-}
-
-.secundarias {
-  display: grid;
-  gap: 2rem;
-  margin-top: 4.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--linea);
-}
-.secundaria h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-.secundaria p {
-  margin-top: 0.4rem;
-  font-size: 0.94rem;
-  color: var(--gris);
-}
-@media (min-width: 56rem) {
-  .secundarias {
-    grid-template-columns: 0.6fr repeat(3, 1fr);
-    gap: 2rem;
   }
 }
 
@@ -688,6 +701,71 @@ svg {
   text-align: center;
   padding: 0 1.5rem;
 }
+
+/*
+  Miniatura del panel de demo/panel.html, dibujada en CSS puro (sin captura
+  de pantalla que mantener) y animada: parece un gráfico corriendo. Al pasar
+  el mouse aparece la invitación a abrirlo.
+*/
+.demo__captura--enlace {
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--azul);
+  background: var(--azul-tinte);
+  background-image: linear-gradient(
+      to right,
+      transparent 0 68%,
+      var(--rojo) 68% calc(68% + 1px),
+      transparent calc(68% + 1px)
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--azul) 0 2px,
+      transparent 2px 15%,
+      var(--azul) 15% calc(15% + 2px),
+      transparent calc(15% + 2px) 34%,
+      var(--azul) 34% calc(34% + 2px),
+      transparent calc(34% + 2px) 52%,
+      var(--azul) 52% calc(52% + 2px),
+      transparent calc(52% + 2px) 68%,
+      var(--azul) 68% calc(68% + 2px),
+      transparent calc(68% + 2px) 100%
+    );
+  background-size: 100% 100%, 200% 55%;
+  background-position: 0 0, 0 65%;
+  background-repeat: no-repeat;
+  animation: pulso-panel 3.4s ease-in-out infinite;
+}
+@keyframes pulso-panel {
+  0%,
+  100% {
+    background-position: 0 0, 0 65%;
+  }
+  50% {
+    background-position: 0 0, 0 58%;
+  }
+}
+.demo__jugar {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  background: var(--papel);
+  border: 1px solid var(--azul);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  box-shadow: 0 2px 10px rgba(11, 15, 26, 0.12);
+  transition: transform 0.16s ease;
+}
+.demo__captura--enlace:hover .demo__jugar,
+.demo__captura--enlace:focus-visible .demo__jugar {
+  transform: scale(1.04);
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo__captura--enlace {
+    animation: none;
+  }
+}
 .demo h3 {
   margin-top: 1rem;
   font-size: 1.5rem;
@@ -724,62 +802,6 @@ svg {
 }
 .demo__vivo strong {
   font-weight: 600;
-}
-
-/* ---------- estamos acá ---------- */
-
-.aca__grilla {
-  display: grid;
-  gap: 3.5rem;
-}
-.aca__grilla p {
-  color: var(--gris);
-  max-width: 50ch;
-  margin-top: 1.5rem;
-}
-.rubros {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 1.25rem;
-}
-.rubros li {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.03em;
-  color: var(--gris);
-  border: 1px solid var(--linea);
-  border-radius: 2px;
-  padding: 0.3rem 0.65rem;
-}
-.foto {
-  margin: 0;
-}
-.foto__marco {
-  aspect-ratio: 4 / 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--linea-2);
-  border-radius: 3px;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gris-2);
-  text-align: center;
-  padding: 0 1.5rem;
-}
-.foto figcaption {
-  margin-top: 0.85rem;
-  font-size: 0.86rem;
-  color: var(--gris-2);
-}
-@media (min-width: 64rem) {
-  .aca__grilla {
-    grid-template-columns: 1fr 0.72fr;
-    gap: 5rem;
-  }
 }
 
 /* ---------- preguntas ---------- */
@@ -837,18 +859,115 @@ svg {
   font-size: 0.98rem;
 }
 
-/* ---------- diagnóstico ---------- */
+/* ---------- diagnóstico: ventana flotante ---------- */
 
-.diagnostico__grilla {
-  display: grid;
-  gap: 3.5rem;
-  align-items: start;
+/*
+  <dialog> nativo. Se centra solo (la hoja de estilos del navegador ya le
+  pone position:fixed + inset:0 + margin:auto al abrirse con showModal());
+  acá se le quita el marco por defecto y se le da la identidad del sitio.
+
+  La entrada usa @starting-style: si el navegador no la soporta, la ventana
+  aparece de golpe en vez de con la transición — se degrada con gracia, no
+  se rompe.
+*/
+.dialogo {
+  border: 0;
+  border-radius: 6px;
+  padding: 0;
+  width: min(37rem, calc(100vw - 2rem));
+  max-height: min(88vh, 56rem);
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow: 0 24px 60px -20px rgba(11, 15, 26, 0.35);
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition: opacity 0.22s ease, transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    overlay 0.22s ease allow-discrete, display 0.22s ease allow-discrete;
 }
-@media (min-width: 64rem) {
-  .diagnostico__grilla {
-    grid-template-columns: 0.85fr 1.15fr;
-    gap: 5rem;
+.dialogo[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .dialogo[open] {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
   }
+}
+.dialogo::backdrop {
+  background: rgba(11, 15, 26, 0.55);
+  transition: background-color 0.22s ease, overlay 0.22s ease allow-discrete,
+    display 0.22s ease allow-discrete;
+}
+@starting-style {
+  .dialogo[open]::backdrop {
+    background-color: rgba(11, 15, 26, 0);
+  }
+}
+
+.dialogo__cuerpo {
+  position: relative;
+  max-height: min(88vh, 56rem);
+  overflow-y: auto;
+  padding: 3rem 1.5rem 1.75rem;
+}
+@media (min-width: 40rem) {
+  .dialogo__cuerpo {
+    padding: 3rem 2.5rem 2rem;
+  }
+}
+.dialogo__titulo {
+  font-size: clamp(1.5rem, 3.4vw, 1.9rem);
+}
+
+/*
+  Cal.com trae su propio diseño adentro del iframe (se ajusta con las
+  opciones de Cal.ns.entrevista("ui", {...}) en el script, no con CSS de
+  acá). Este contenedor solo le da el marco: ancho completo, borde y
+  esquinas redondeadas para que no quede pegado al resto del paso 2.
+*/
+.dialogo__calendario {
+  margin-top: 1.75rem;
+  width: 100%;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.dialogo__cerrar {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--linea);
+  border-radius: 50%;
+  background: var(--papel);
+  cursor: pointer;
+  transition: border-color 0.16s ease;
+}
+.dialogo__cerrar:hover {
+  border-color: var(--tinta);
+}
+.dialogo__cerrar::before,
+.dialogo__cerrar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.8rem;
+  height: 1px;
+  background: var(--gris);
+}
+.dialogo__cerrar::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.dialogo__cerrar::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.dialogo__datos {
+  margin-top: 2rem;
 }
 
 .datos {
@@ -879,19 +998,7 @@ svg {
   color: var(--tinta);
 }
 
-.campos {
-  display: grid;
-  gap: 1.5rem;
-}
-@media (min-width: 40rem) {
-  .campos {
-    grid-template-columns: 1fr 1fr;
-  }
-  .campos .ancho {
-    grid-column: 1 / -1;
-  }
-}
-
+/* Etiqueta en mono, versalita: la usan también los tiles de las demos. */
 .etiqueta {
   display: block;
   font-family: var(--mono);
@@ -900,108 +1007,6 @@ svg {
   text-transform: uppercase;
   color: var(--gris-2);
   margin-bottom: 0.5rem;
-}
-
-/* Campos sin caja: sólo una línea, que se marca al enfocar. */
-.campo {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--linea);
-  border-radius: 0;
-  padding: 0.5rem 0;
-  font-family: var(--sans);
-  font-size: 1rem;
-  color: var(--tinta);
-  transition: border-color 0.16s ease;
-}
-.campo:hover {
-  border-bottom-color: var(--gris-2);
-}
-.campo:focus {
-  outline: none;
-  border-bottom-color: var(--azul);
-  border-bottom-width: 2px;
-  padding-bottom: calc(0.5rem - 1px);
-}
-.campo::placeholder {
-  color: var(--gris-2);
-}
-select.campo {
-  appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--gris) 50%),
-    linear-gradient(135deg, var(--gris) 50%, transparent 50%);
-  background-position: calc(100% - 10px) 55%, calc(100% - 5px) 55%;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
-  padding-right: 1.5rem;
-}
-textarea.campo {
-  resize: vertical;
-  min-height: 5.5rem;
-}
-
-.pista {
-  margin-top: 0.5rem;
-  font-size: 0.82rem;
-  color: var(--gris-2);
-}
-
-fieldset {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-.opciones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.5rem;
-}
-.opciones label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.94rem;
-  color: var(--gris);
-  cursor: pointer;
-}
-.opciones input {
-  accent-color: var(--azul);
-  width: 0.95rem;
-  height: 0.95rem;
-}
-
-.trampa {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
-.envio {
-  margin-top: 2.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.25rem;
-}
-.estado {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--gris);
-}
-.estado[data-tono='ok'] {
-  color: var(--azul);
-}
-.estado[data-tono='error'] {
-  color: var(--rojo);
-}
-
-.privacidad {
-  margin-top: 1.75rem;
-  font-size: 0.84rem;
-  color: var(--gris-2);
-  max-width: 54ch;
 }
 
 /* ---------- pie ---------- */
