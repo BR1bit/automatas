@@ -444,53 +444,13 @@
             WhatsApp y correo.
           </p>
 
-          <div
-            id="cal-embed-entrevista"
+          <!-- Google Calendar Appointment Scheduling -->
+          <iframe
             class="dialogo__calendario"
-            style="min-height: 32rem"
-          ></div>
-
-          <script type="text/javascript">
-              (function (C, A, L) {
-                let p = function (a, ar) { a.q.push(ar); };
-                let d = C.document;
-                C.Cal = C.Cal || function () {
-                  let cal = C.Cal;
-                  let ar = arguments;
-                  if (!cal.loaded) {
-                    cal.ns = {};
-                    cal.q = cal.q || [];
-                    d.head.appendChild(d.createElement("script")).src = A;
-                    cal.loaded = true;
-                  }
-                  if (ar[0] === L) {
-                    const api = function () { p(api, arguments); };
-                    const namespace = ar[1];
-                    api.q = api.q || [];
-                    if (typeof namespace === "string") {
-                      cal.ns[namespace] = cal.ns[namespace] || api;
-                      p(cal.ns[namespace], ar);
-                      p(cal, ["initNamespace", namespace]);
-                    } else p(cal, ar);
-                    return;
-                  }
-                  p(cal, ar);
-                };
-              })(window, "https://cal.com/embed/embed.js", "init");
-
-              Cal("init", "entrevista", { origin: "https://cal.com" });
-              Cal.ns.entrevista("inline", {
-                elementOrSelector: "#cal-embed-entrevista",
-                calLink: "bruno-rodriguez-wtalvm/30min",
-                config: { layout: "month_view" },
-              });
-              Cal.ns.entrevista("ui", {
-                theme: "light",
-                styles: { branding: { brandColor: "#003399" } },
-                hideEventTypeDetails: false,
-                layout: "month_view",
-              });
-            </script>
+            src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0PN3voO2tvHs3QAojVBqpX03A7SvEfb75-e73JlatlZuo6pVtjen7Sthr9AGQ-1W6OCWRN5RPl?gv=true"
+            title="Elegí un horario para la entrevista"
+            frameborder="0"
+          ></iframe>
 
           <dl class="datos dialogo__datos">
             <div>

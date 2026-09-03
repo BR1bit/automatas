@@ -112,11 +112,20 @@ marcados con `PENDIENTE` y hay que reemplazarlos:
    enlace del pie). Buscar y reemplazar las tres.
 2. **Teléfono fijo, correo y zona** — en `index.html`: bloque `<script
    type="application/ld+json">`, sección diagnóstico y pie.
-
-El link de Cal.com ya está cargado (`bruno-rodriguez-wtalvm/30min`). Antes de
-publicar, conviene entrar a la cuenta de Cal.com y confirmar que la
-disponibilidad semanal y la duración del evento («30min») son las que se
-quieren mostrar públicamente.
+3. **Calendario de Google** — dentro del modal de «Agendar entrevista» hay un
+   `<div class="dialogo__calendario dialogo__calendario--pendiente">` con el
+   texto «Calendario de Google · pendiente de conectar» (buscarlo en
+   `index.html`, comentario `PENDIENTE` justo arriba). Para conectarlo:
+   - En Google Calendar, crear una **Booking page** (Configuración → Booking
+     pages, o el botón «Create» → «Appointment schedule») con la
+     disponibilidad y la duración del turno que se quiera ofrecer.
+   - Ahí: **Options → Sharing options → Website embed → Inline booking
+     page → Copy code**. Google genera un `<iframe>` propio, sin script.
+   - Reemplazar el `<div class="dialogo__calendario dialogo__calendario--pendiente">…</div>`
+     completo por ese `<iframe>`, agregándole la clase `dialogo__calendario`
+     (para que herede el marco: ancho completo, borde, esquinas redondeadas)
+     y sacándole el ancho/alto fijos que trae Google por defecto — el CSS del
+     sitio ya le da `width:100%` y `height:32rem`.
 
 ## Agendar entrevista
 
@@ -128,19 +137,16 @@ envío (para que a Bruno le llegara el detalle, ya que no había webhook). Sacab
 a la visita del sitio con una pestaña nueva que no esperaba, así que se
 simplificó: agendar es agendar, un solo paso.
 
-Adentro, un calendario de [Cal.com](https://cal.com) embebido (widget oficial
-"inline", plan gratuito — conexiones de calendario ilimitadas, incluso con dos
-cuentas de Google Calendar a la vez) apunta al evento real de Bruno
-(`bruno-rodriguez-wtalvm/30min`). Cal.com manda correo al instante cuando
-alguien reserva.
+Adentro va una **página de turnos de Google Calendar** embebida (ver el punto
+3 de «Antes de publicar» arriba). Es un `<iframe>` plano, sin JavaScript de
+por medio: Google Calendar manda correo al instante cuando alguien reserva.
 
 **Si más adelante se quiere volver a capturar contexto antes de la llamada**
-(qué proceso quiere mejorar, de qué rubro es, etc.), la forma correcta es
-agregar esas preguntas como **campos personalizados del propio tipo de evento
-en Cal.com** (se configuran en cal.com → Event Types → el evento → Advanced →
-Booking questions), no un formulario aparte: así siguen llegando en la misma
-notificación de la reserva, sin gatillar nada del lado del navegador ni sacar
-a nadie del flujo. Debajo del calendario quedan WhatsApp y correo como
+(qué proceso quiere mejorar, de qué rubro es, etc.), Google Calendar permite
+agregar **preguntas propias al formulario de la reserva** (al crear o editar
+la booking page, sección de preguntas para quien reserva) — así siguen
+llegando en la misma notificación, sin un formulario aparte ni gatillar nada
+del lado del navegador. Debajo del calendario quedan WhatsApp y correo como
 alternativa para quien prefiera escribir antes de agendar.
 
 ## Prototipo 1: panel de monitoreo (`demo/panel.html`)

@@ -921,14 +921,16 @@ svg {
 }
 
 /*
-  Cal.com trae su propio diseño adentro del iframe (se ajusta con las
-  opciones de Cal.ns.entrevista("ui", {...}) en el script, no con CSS de
-  acá). Este contenedor solo le da el marco: ancho completo, borde y
-  esquinas redondeadas para que no quede pegado al resto del paso 2.
+  Marco para la reserva de horario: un <iframe> de Google Calendar (trae su
+  propio diseño adentro, no se le toca el CSS) o, mientras no esté
+  conectado, el placeholder de abajo con el mismo lenguaje visual que
+  .demo__captura.
 */
 .dialogo__calendario {
+  display: block;
   margin-top: 1.75rem;
   width: 100%;
+  height: 600px;
   border: 1px solid var(--linea);
   border-radius: 6px;
   overflow: hidden;
