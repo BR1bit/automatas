@@ -23,6 +23,16 @@
   --lila: #7a5aa6;
   --rojo: #b43232;
 
+  --barra-fondo: rgba(255, 255, 255, 0.88);
+  --sombra-boton: rgba(0, 51, 153, 0.45);
+  --sombra-linea: rgba(11, 15, 26, 0.35);
+  --sombra-jugar: rgba(11, 15, 26, 0.12);
+  --captura-color: rgba(0, 51, 153, 0.5);
+
+  /* 0 en claro, 1 en oscuro: mueve la perilla de .interruptor-tema y cruza
+     sus íconos de sol/luna sin repetir la lógica de tema en esa regla. */
+  --activo: 0;
+
   /* Titulares: Bricolage Grotesque, más expresiva que la sans de cuerpo —
      es lo que le da carácter a h1/h2/h3 sin agregar color ni cajas. */
   --display: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system,
@@ -33,6 +43,58 @@
 
   --rebote: cubic-bezier(0.16, 1, 0.3, 1);
   --ancho: 1160px;
+
+  color-scheme: light dark;
+}
+
+/*
+  Modo oscuro: sigue al sistema por defecto, pero .interruptor-tema (en la
+  barra) puede forzarlo para esta visita —app.js le pone data-theme="oscuro"
+  o "claro" en <html> y lo recuerda en localStorage—. Por eso son dos
+  bloques: éste reacciona al sistema salvo que haya una elección explícita
+  ("claro" le gana incluso de noche), y el de abajo aplica "oscuro" elegido
+  a mano aunque el sistema esté en claro.
+
+  Dos colores quedan fijos en los dos temas, a propósito: el azul de
+  `.territorio` y el `.pie` oscuro son gestos de bandera, no superficies de
+  interfaz — no tiene sentido que se aclaren de noche. Por eso no usan estos
+  tokens; están en su regla con el valor literal, más abajo.
+*/
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='claro']) {
+    --papel: #0c1120;
+    --tinta: #eef1f7;
+    --gris: #a3acc4;
+    --gris-2: #78829c;
+    --linea: #232b42;
+    --linea-2: #161c2e;
+    --azul: #3f6fe0;
+    --azul-hover: #5b86ff;
+    --azul-tinte: #16213d;
+    --barra-fondo: rgba(12, 17, 32, 0.82);
+    --sombra-boton: rgba(63, 111, 224, 0.55);
+    --sombra-linea: rgba(0, 0, 0, 0.6);
+    --sombra-jugar: rgba(0, 0, 0, 0.5);
+    --captura-color: rgba(63, 111, 224, 0.65);
+    --activo: 1;
+  }
+}
+:root[data-theme='oscuro'] {
+  --papel: #0c1120;
+  --tinta: #eef1f7;
+  --gris: #a3acc4;
+  --gris-2: #78829c;
+  --linea: #232b42;
+  --linea-2: #161c2e;
+  --azul: #3f6fe0;
+  --azul-hover: #5b86ff;
+  --azul-tinte: #16213d;
+  --barra-fondo: rgba(12, 17, 32, 0.82);
+  --sombra-boton: rgba(63, 111, 224, 0.55);
+  --sombra-linea: rgba(0, 0, 0, 0.6);
+  --sombra-jugar: rgba(0, 0, 0, 0.5);
+  --captura-color: rgba(63, 111, 224, 0.65);
+  --activo: 1;
 }
 
 *,
@@ -321,7 +383,7 @@ svg {
   background: var(--azul-hover);
   border-color: var(--azul-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px -10px rgba(0, 51, 153, 0.45);
+  box-shadow: 0 8px 20px -10px var(--sombra-boton);
 }
 .boton:active {
   transform: translateY(0);
@@ -343,7 +405,7 @@ svg {
   background: transparent;
   border-color: var(--tinta);
   color: var(--tinta);
-  box-shadow: 0 8px 20px -12px rgba(11, 15, 26, 0.35);
+  box-shadow: 0 8px 20px -12px var(--sombra-linea);
 }
 
 .boton--chico {
@@ -353,14 +415,18 @@ svg {
 
 /* ---------- barra superior ---------- */
 
-/* Las tres franjas de la bandera, reducidas a una línea. */
+/*
+  Las tres franjas de la bandera, reducidas a una línea. Colores literales
+  a propósito, no los tokens --azul/--rojo: es un gesto heráldico, no una
+  superficie de interfaz, así que no cambia con el tema.
+*/
 .franja-bandera {
   height: 3px;
   background: linear-gradient(
     to bottom,
-    var(--azul) 0 33.33%,
-    var(--rojo) 33.33% 66.66%,
-    var(--azul) 66.66% 100%
+    #003399 0 33.33%,
+    #b43232 33.33% 66.66%,
+    #003399 66.66% 100%
   );
 }
 
@@ -368,7 +434,7 @@ svg {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--barra-fondo);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--linea);
 }
@@ -455,8 +521,62 @@ svg {
   transform-origin: left;
 }
 
-.barra .boton {
+/*
+  Interruptor de tema: sol y luna dentro de una perilla que desliza. Sin
+  JavaScript, .barra__enlaces ya no está para empujarlo, así que él mismo
+  toma el margin-left:auto en el celular; en el nav ancho lo cede de vuelta
+  (los enlaces ya empujan el grupo entero).
+*/
+.interruptor-tema {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 3rem;
+  height: 1.625rem;
+  padding: 0.1875rem;
   margin-left: auto;
+  flex-shrink: 0;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  background: var(--linea-2);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.interruptor-tema__perilla {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--papel);
+  box-shadow: 0 1px 4px rgba(11, 15, 26, 0.25);
+  transform: translateX(calc(var(--activo, 0) * 1.375rem));
+  transition: transform 0.3s var(--rebote);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.interruptor-tema__icono {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--gris);
+  transition: opacity 0.2s ease;
+}
+.interruptor-tema__icono--sol {
+  opacity: calc(1 - var(--activo, 0));
+}
+.interruptor-tema__icono--luna {
+  opacity: var(--activo, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .interruptor-tema__perilla {
+    transition: none;
+  }
+}
+
+.barra .boton {
   flex-shrink: 0;
 }
 
@@ -464,7 +584,7 @@ svg {
   .barra__enlaces {
     display: flex;
   }
-  .barra .boton {
+  .interruptor-tema {
     margin-left: 0;
   }
 }
@@ -617,8 +737,9 @@ svg {
 
 /* ---------- franja de territorio ---------- */
 
+/* Azul literal, no el token: es el azul de la bandera, no se aclara de noche. */
 .territorio {
-  background: var(--azul);
+  background: #003399;
   color: #fff;
 }
 .territorio__grilla {
@@ -757,7 +878,7 @@ svg {
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(0, 51, 153, 0.5);
+  color: var(--captura-color);
   text-align: center;
   padding: 0 1.5rem;
 }
@@ -801,7 +922,7 @@ svg {
 .demo__captura--enlace:hover,
 .demo__captura--enlace:focus-visible {
   transform: translateY(-3px);
-  box-shadow: 0 14px 30px -16px rgba(0, 51, 153, 0.4);
+  box-shadow: 0 14px 30px -16px var(--sombra-boton);
 }
 @keyframes pulso-panel {
   0%,
@@ -820,7 +941,7 @@ svg {
   border: 1px solid var(--azul);
   border-radius: 999px;
   padding: 0.45rem 1rem;
-  box-shadow: 0 2px 10px rgba(11, 15, 26, 0.12);
+  box-shadow: 0 2px 10px var(--sombra-jugar);
   transition: transform 0.16s ease;
 }
 .demo__captura--enlace:hover .demo__jugar,
@@ -1086,8 +1207,9 @@ svg {
 
 /* ---------- pie ---------- */
 
+/* Tinta literal, no el token: el pie es oscuro en los dos temas a propósito. */
 .pie {
-  background: var(--tinta);
+  background: #0b0f1a;
   color: #fff;
   padding: 4.5rem 0 3rem;
 }

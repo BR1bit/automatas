@@ -130,20 +130,15 @@ marcados con `PENDIENTE` y hay que reemplazarlos:
    enlace del pie). Buscar y reemplazar las tres.
 2. **Teléfono fijo, correo y zona** — en `index.html`: bloque `<script
    type="application/ld+json">`, sección diagnóstico y pie.
-3. **Calendario de Google** — dentro del modal de «Agendar entrevista» hay un
-   `<div class="dialogo__calendario dialogo__calendario--pendiente">` con el
-   texto «Calendario de Google · pendiente de conectar» (buscarlo en
-   `index.html`, comentario `PENDIENTE` justo arriba). Para conectarlo:
-   - En Google Calendar, crear una **Booking page** (Configuración → Booking
-     pages, o el botón «Create» → «Appointment schedule») con la
-     disponibilidad y la duración del turno que se quiera ofrecer.
-   - Ahí: **Options → Sharing options → Website embed → Inline booking
-     page → Copy code**. Google genera un `<iframe>` propio, sin script.
-   - Reemplazar el `<div class="dialogo__calendario dialogo__calendario--pendiente">…</div>`
-     completo por ese `<iframe>`, agregándole la clase `dialogo__calendario`
-     (para que herede el marco: ancho completo, borde, esquinas redondeadas)
-     y sacándole el ancho/alto fijos que trae Google por defecto — el CSS del
-     sitio ya le da `width:100%` y `height:32rem`.
+
+El **calendario de Google ya está conectado** (no queda pendiente): el
+modal de «Agendar entrevista» tiene un `<iframe class="dialogo__calendario">`
+apuntando a la booking page real de Bruno en Google Calendar. Si hay que
+cambiarla por otra (otra cuenta, otra duración de turno), se genera igual
+que la actual: Google Calendar → **Booking pages** → **Options → Sharing
+options → Website embed → Inline booking page → Copy code**, y se reemplaza
+el `src` del `<iframe>` en `index.html` (línea con
+`class="dialogo__calendario"`) por la URL nueva.
 
 ## Agendar entrevista
 
@@ -155,9 +150,9 @@ envío (para que a Bruno le llegara el detalle, ya que no había webhook). Sacab
 a la visita del sitio con una pestaña nueva que no esperaba, así que se
 simplificó: agendar es agendar, un solo paso.
 
-Adentro va una **página de turnos de Google Calendar** embebida (ver el punto
-3 de «Antes de publicar» arriba). Es un `<iframe>` plano, sin JavaScript de
-por medio: Google Calendar manda correo al instante cuando alguien reserva.
+Adentro va una **página de turnos de Google Calendar** embebida (ver «Antes
+de publicar» arriba). Es un `<iframe>` plano, sin JavaScript de por medio:
+Google Calendar manda correo al instante cuando alguien reserva.
 
 **Si más adelante se quiere volver a capturar contexto antes de la llamada**
 (qué proceso quiere mejorar, de qué rubro es, etc.), Google Calendar permite
@@ -223,8 +218,12 @@ aprobadas) es un proyecto aparte y no bloquea el lanzamiento.
 
 ## Publicar
 
-En Cloudflare Pages: proyecto sin framework, sin comando de build, directorio de
-salida `landing/`. También sirve cualquier hosting estático o Netlify.
+Dos rutas posibles — la que está **en producción hoy** es la segunda:
+
+- **Hosting estático** (Cloudflare Pages, Netlify): proyecto sin framework,
+  sin comando de build, directorio de salida `landing/`.
+- **Docker en la VM de Bruno**, sirviendo `automatas.app` — ver
+  «Desplegar con Docker» y «Producción: automatas.app» más abajo.
 
 Falta agregar antes del lanzamiento: analítica sin cookies (Umami o Plausible) y
 la ficha de empresa en Google con domicilio en Paysandú.
@@ -266,3 +265,38 @@ Archivos:
 Probado localmente (`docker build` + `docker run`, con `curl` verificando
 cada tipo de archivo, gzip, cabeceras, `/healthz` y un 404 real) antes de
 dejarlo documentado acá.
+
+## Producción: automatas.app
+
+El sitio está en vivo con dominio propio, con este recorrido:
+
+```
+visitante → automatas.app (Cloudflare DNS, solo DNS, sin proxy naranja)
+          → nginx en la VM de AWS de Bruno (certificado Let's Encrypt vía certbot)
+          → túnel SSH inverso ya existente hacia IPA (puerto 8081→8080, sin tocar)
+          → nginx de IPA (server_name automatas.app, puerto 8080)
+          → contenedor automatas-landing (127.0.0.1:8090)
+```
+
+`automatas.app` comparte servidor con los otros servicios de Bruno
+(`itspvm.duckdns.org`, etc.) pero tiene su propio `server{}` en el nginx de
+IPA y su propio certificado — no es un subpath de nada.
+
+**Se actualiza solo desde GitHub.** En IPA hay un timer de systemd
+(`automatas-deploy.timer` + `automatas-deploy.service`) que cada 2 minutos
+corre `/root/automatas/deploy-check.sh`: hace `git fetch origin main`, y si
+hay commits nuevos, `git merge --ff-only` + `docker compose up -d --build`.
+Probado de punta a punta (se forzó el repo de IPA a un commit viejo y el
+timer solo lo detectó y trajo de vuelta, sin intervención manual). En la
+práctica: **cualquiera que haga push a `main` en GitHub ve el cambio en
+`automatas.app` dentro de 2 minutos**, sin entrar por SSH.
+
+Dos límites a tener en cuenta:
+- Solo mira `main`. Un push a otra rama no se publica hasta mergearse.
+- Si un commit rompe el build de Docker, el sitio se queda con la última
+  versión buena (no se cae) pero no se actualiza hasta subir un fix.
+
+`docker-compose.override.yml` (en IPA, `/root/automatas/`, **no versionado
+en git**) es lo único específico de esa VM: publica el puerto
+`127.0.0.1:8090` porque ahí el proxy inverso es el nginx del host, no otro
+contenedor.

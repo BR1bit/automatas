@@ -1,4 +1,55 @@
 /*
+  Interruptor de tema (sol/luna en la barra). El <head> ya aplicó, antes de
+  este script, el tema guardado en localStorage si había uno (ver el
+  <script> inline al principio del <html>, que evita el parpadeo). Acá solo
+  falta: reflejar ese estado inicial en el botón y reaccionar a los clics.
+
+  Sin elección guardada, el sitio sigue el sistema (prefers-color-scheme,
+  en estilos.css) y el botón arranca reflejando lo que el sistema diga en
+  este momento.
+*/
+(function () {
+  const boton = document.querySelector('[data-cambiar-tema]');
+  if (!boton) return;
+
+  const raiz = document.documentElement;
+  const sistemaOscuro = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function oscuroActivo() {
+    const elegido = raiz.getAttribute('data-theme');
+    if (elegido === 'oscuro') return true;
+    if (elegido === 'claro') return false;
+    return sistemaOscuro.matches;
+  }
+
+  function reflejar() {
+    const oscuro = oscuroActivo();
+    boton.setAttribute('aria-pressed', String(oscuro));
+    boton.setAttribute(
+      'aria-label',
+      oscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'
+    );
+  }
+
+  boton.addEventListener('click', () => {
+    const nuevo = oscuroActivo() ? 'claro' : 'oscuro';
+    raiz.setAttribute('data-theme', nuevo);
+    try {
+      localStorage.setItem('tema', nuevo);
+    } catch (error) {}
+    reflejar();
+  });
+
+  // Si nunca eligió a mano y cambia el sistema (de día a de noche, u otra
+  // app en la computadora), el botón se actualiza solo.
+  sistemaOscuro.addEventListener('change', () => {
+    if (!raiz.getAttribute('data-theme')) reflejar();
+  });
+
+  reflejar();
+})();
+
+/*
   Transiciones de entrada por sección.
 
   Las clases se agregan desde acá y no desde el HTML: así, si el JavaScript

@@ -4,6 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!--
+      Aplica el tema elegido a mano (si hay uno guardado) antes de que se
+      pinte nada: así no hay un parpadeo del tema del sistema al elegido.
+      Sincrónico y arriba de todo a propósito, antes de leer estilos.css.
+    -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('tema');
+          if (t === 'claro' || t === 'oscuro') {
+            document.documentElement.setAttribute('data-theme', t);
+          }
+        } catch (error) {}
+      })();
+    </script>
+
     <title>Automatiza procesos. Mejora tus decisiones · automatas</title>
     <meta
       name="description"
@@ -11,7 +27,16 @@
     />
     <link rel="canonical" href="https://automatas.app/" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#003399" />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0c1120"
+      media="(prefers-color-scheme: dark)"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_UY" />
@@ -77,6 +102,39 @@
           <li><a href="#demostraciones">Demostraciones</a></li>
           <li><a href="#preguntas">Preguntas</a></li>
         </ul>
+
+        <button
+          type="button"
+          class="interruptor-tema"
+          data-cambiar-tema
+          aria-pressed="false"
+          aria-label="Cambiar a modo oscuro"
+        >
+          <span class="interruptor-tema__perilla" aria-hidden="true">
+            <svg
+              class="interruptor-tema__icono interruptor-tema__icono--sol"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+              />
+            </svg>
+            <svg
+              class="interruptor-tema__icono interruptor-tema__icono--luna"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              stroke="none"
+            >
+              <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />
+            </svg>
+          </span>
+        </button>
 
         <button
           type="button"
