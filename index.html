@@ -91,6 +91,13 @@
     <main id="contenido">
       <!-- ---------- portada ---------- -->
       <section class="portada">
+        <!--
+          Partículas que atraviesan todo el fondo del hero y se ensamblan
+          en la flor: ver app.js. Sin JavaScript o con "reducir movimiento"
+          activado, este canvas queda vacío y la flor de abajo se muestra
+          directamente — nunca depende de él para verse.
+        -->
+        <canvas id="particulas-flor" class="portada__particulas" aria-hidden="true"></canvas>
         <div class="contenedor portada__grilla">
           <div>
             <p class="antetitulo">

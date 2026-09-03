@@ -24,7 +24,7 @@ esta carpeta tal cual.
 | `flor.svg`, `flor-marca.svg` | La marca del mburucuyá, en versión grande y chica. |
 | `puente.svg` | El puente Paysandú–Colón, de fondo entre la portada y la franja de territorio. |
 | `favicon.svg` | Ícono de pestaña. |
-| `fuentes/` | Schibsted Grotesk y Geist Mono autohospedadas (139 KB). El sitio no le pide nada a Google. |
+| `fuentes/` | Bricolage Grotesque, Instrument Sans y Geist Mono autohospedadas (~140 KB). El sitio no le pide nada a Google. |
 | `demo/panel.html` | El prototipo 1 funcionando: panel de monitoreo con datos simulados. |
 | `demo/aprobaciones.html` | El prototipo 2 funcionando: bandeja de aprobaciones administrativas. |
 | `marca/` | Variantes de logo descartadas, conservadas por si sirven más adelante. |
@@ -55,11 +55,25 @@ punta**. La flor leída como red — cinco procesos que salen de un centro y
 terminan en un punto de conexión. Ahí está la asociación con automatizar, sin
 pegarle un engranaje encima.
 
-En la portada **gira sobre su eje, inclinada 30° en perspectiva**: una vuelta
-cada 54 segundos. Lento a propósito, para que lea como mecanismo en marcha y no
-como indicador de carga. Con «reducir movimiento» activado conserva la
-inclinación y pierde el giro. En la barra superior no gira: al pasar el mouse
-avanza un pétalo (72°, un quinto de vuelta) y queda idéntica.
+En la portada **gira despacio sobre el plano**, plana —igual que el logo de
+la barra y el pie, sin inclinación en perspectiva—: una vuelta cada 54
+segundos. Lento a propósito, para que lea como mecanismo en marcha y no como
+indicador de carga. Con «reducir movimiento» activado se detiene, quieta. En
+la barra superior no gira: al pasar el mouse avanza un pétalo (72°, un quinto
+de vuelta) y queda idéntica.
+
+(Antes tuvo una inclinación 3D tipo disco en perspectiva: se sacó porque
+desentonaba con el logo plano de todos los demás lugares del sitio.)
+
+Antes de asentarse ahí, la flor de la portada se **ensambla desde partículas**
+que atraviesan todo el fondo del hero (`#particulas-flor` en `index.html`, la
+lógica en `app.js`). Cada partícula nace en un punto disperso y viaja hacia un
+punto real de la silueta de la flor —muestreado de los `<path>`/`<circle>`
+del propio SVG con `getPointAtLength`/`getScreenCTM`, no aproximado a mano—
+así el destino coincide exactamente con la flor real, en el ángulo en que esté
+dibujada en ese momento. Solo corre con JavaScript activo, viewport ancho
+(donde la flor ya se muestra) y sin «reducir movimiento»; si algo de eso
+falta, la flor aparece directo, como antes de este efecto.
 
 - Los **19 puntos** de los diecinueve departamentos siguen en el pie, como
   separador.
@@ -99,8 +113,12 @@ cp marca/J2-chica.svg flor-marca.svg    # talla chica
 El sitio se compromete con un solo mundo visual, claro, como el campo blanco de
 la bandera: no hay tema oscuro y es a propósito.
 
-Tipografías: **Schibsted Grotesk** para todo el texto y **Geist Mono** para
-etiquetas, numeración y datos. Licencia SIL Open Font License 1.1.
+Tipografías: **Bricolage Grotesque** para titulares (h1/h2/h3 y el wordmark
+"automatas"), **Instrument Sans** para texto de cuerpo, y **Geist Mono** para
+etiquetas, numeración y datos. Licencia SIL Open Font License 1.1. Se cambió
+desde Schibsted Grotesk (para todo el texto) porque Bruno vio el sitio "muy
+minimalista" — separar titular y cuerpo en dos voces distintas le da más
+carácter sin volver a agregar color ni cajas.
 
 ## Antes de publicar
 
@@ -210,3 +228,41 @@ salida `landing/`. También sirve cualquier hosting estático o Netlify.
 
 Falta agregar antes del lanzamiento: analítica sin cookies (Umami o Plausible) y
 la ficha de empresa en Google con domicilio en Paysandú.
+
+## Desplegar con Docker
+
+Para la VM de Bruno (conectada por Tailscale, con proxy inverso propio y otros
+servicios ya corriendo ahí), en vez de un hosting estático: `Dockerfile` +
+`docker-compose.yml` levantan el sitio en un nginx propio, chico y sin
+dependencias — coherente con el resto del proyecto.
+
+```sh
+cd landing
+docker compose build
+docker compose up -d
+```
+
+Por defecto el contenedor **no publica ningún puerto**: hay que elegir cómo
+se conecta con el nginx de la VM, editando `docker-compose.yml` (las dos
+opciones están comentadas ahí mismo, con el server block de ejemplo para
+cada una):
+
+- **Si tu nginx también es un contenedor**, en la misma red Docker: sumá
+  este servicio a esa red y hacele `proxy_pass` por nombre
+  (`automatas-landing:80`).
+- **Si tu nginx corre en el host**, fuera de Docker: publicá el puerto
+  atado a `127.0.0.1` (no a todas las interfaces, para no exponerlo fuera
+  de la VM) y hacele `proxy_pass` a `127.0.0.1:<puerto>`.
+
+Archivos:
+
+| Archivo | Qué es |
+| --- | --- |
+| `Dockerfile` | `nginx:1.27-alpine` con los archivos del sitio copiados adentro. Sin build multi-etapa: no hay nada que compilar. |
+| `nginx.conf` | El server block: gzip, cache por tipo de archivo, `/healthz`, 404 real (no es una SPA, no hace falta redirigir todo a `index.html`). |
+| `security-headers.conf` | Cabeceras de seguridad, en archivo aparte para que un solo `include` las mantenga iguales en todos los `location` — en nginx, un `location` con su propio `add_header` deja de heredar los del `server`, no se suman. |
+| `.dockerignore` | Deja afuera de la imagen `marca/`, `README.md` y los archivos del propio Docker: nada de eso lo necesita quien visita el sitio. |
+
+Probado localmente (`docker build` + `docker run`, con `curl` verificando
+cada tipo de archivo, gzip, cabeceras, `/healthz` y un 404 real) antes de
+dejarlo documentado acá.
